@@ -26,6 +26,10 @@ BACKEND_DIR="$PROJECT_ROOT/backend"
 WEB_DIR="$PROJECT_ROOT/web"
 
 # ------------------------- Dependencies --------------------------
+# Ruby gems path
+export GEM_HOME="$HOME/gems"
+export PATH="$GEM_HOME/bin:$PATH"
+
 require() {
   command -v "$1" >/dev/null 2>&1 || {
     echo "Missing dependency: $1" >&2
@@ -44,10 +48,6 @@ if (( JAVA_MAJOR < 21 )); then
   echo "Java 21 or newer is required (found ${JAVA_MAJOR})." >&2
   exit 1
 fi
-
-# Ruby gems path
-export GEM_HOME="$HOME/gems"
-export PATH="$GEM_HOME/bin:$PATH"
 
 # ------------------------- Build Jar -----------------------------
 git pull --ff-only
