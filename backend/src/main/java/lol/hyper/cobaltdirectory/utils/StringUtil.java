@@ -214,7 +214,7 @@ public class StringUtil {
         return m.replaceFirst(Matcher.quoteReplacement(scheme + "://" + host) + "$3");
     }
 
-    private static String officialInstanceName(String api) {
+    public static String officialInstanceName(String api) {
         return api.replace(".imput.net", "");
     }
 }
