@@ -1,4 +1,8 @@
-<title>{{ page.title }} - {{ site.title }}</title>
+{% if page.url == "/" or page.url == "/index.html" %}
+  <title>{{ site.title }}</title>
+{% else %}
+  <title>{{ page.title }} - {{ site.title }}</title>
+{% endif %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="{{ page.description }}">
