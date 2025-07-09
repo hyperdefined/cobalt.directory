@@ -48,11 +48,12 @@ public class ApiCheck {
                     instance.setOffline();
                     return;
                 }
+                // make sure we can parse it
                 try {
                     json = new JSONObject(responseContent);
                 } catch (JSONException exception2) {
                     // we tried everything, mark it dead
-                    logger.warn("Failed to parse /api/serverInfo for {}", api);
+                    logger.error("Failed to parse JSON /api/serverInfo for {}", api, exception2);
                     instance.setOffline();
                     return;
                 }
@@ -71,7 +72,7 @@ public class ApiCheck {
             try {
                 json = new JSONObject(responseContent);
             } catch (JSONException exception2) {
-                logger.warn("Failed to parse serverInfo for {}", api);
+                logger.error("Failed to parse JSON /api/serverInfo for {}", api, exception2);
                 // we tried everything, mark it dead
                 instance.setOffline();
                 return;

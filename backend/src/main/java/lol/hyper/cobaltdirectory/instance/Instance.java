@@ -76,10 +76,6 @@ public class Instance implements Comparable<Instance> {
         return api;
     }
 
-    public String getCommit() {
-        return commit;
-    }
-
     public String getFrontEnd() {
         return frontEnd;
     }

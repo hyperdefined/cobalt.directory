@@ -17,14 +17,14 @@ import java.util.List;
 
 public class Init {
 
-    public Logger logger = LogManager.getLogger(this);
+    public final Logger logger = LogManager.getLogger(this);
     private String userAgent;
     private JSONObject config;
     private JSONObject tests;
     private JSONObject apiKeys;
     private List<String> instanceFileContents;
 
-    public void start(String[] args) {
+    public void start() {
         // load the git information
         String commit = null;
         try {
