@@ -118,23 +118,23 @@ public class Test {
                     // headers returned valid length
                     if (size > 0) {
                         logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
-                        instance.addResult(new TestResult(service, true, "Working, returned valid status, HTTP 200, and content-length size"));
+                        instance.addResult(new TestResult(service, true, "Working, returned valid status, and has valid content-length header"));
                         return;
                     }
                     if (size == 0) {
                         // headers reported 0 content length
                         logger.warn("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
-                        instance.addResult(new TestResult(service, false, "Valid response, but content-length is 0"));
+                        instance.addResult(new TestResult(service, false, "Not working, content-length header is 0"));
                         return;
                     }
                     if (size == -1) {
                         // there were no headers in the response
                         logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
-                        instance.addResult(new TestResult(service, true, "Valid response, no content-length to double check"));
+                        instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header was found"));
                     }
                 } else {
                     logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
-                    instance.addResult(new TestResult(service, true, "Working, returned valid status and HTTP 200"));
+                    instance.addResult(new TestResult(service, true, "Working, returned valid status"));
                 }
             } else {
                 logger.info("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
