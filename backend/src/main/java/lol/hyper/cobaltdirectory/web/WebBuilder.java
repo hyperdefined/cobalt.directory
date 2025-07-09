@@ -64,7 +64,12 @@ public class WebBuilder {
             instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getApi());
             instanceAccess = "This instance does not have a web version. To use this instance, change your processing server <a href=\"https://cobalt.tools/settings/instances#community\">here</a> to <code>" + instance.getProtocol() + "://" + instance.getApi() + "</code>.";
         } else {
-            instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd());
+            if (instance.getApi().contains("imput.net")) {
+                String imputServer = StringUtil.officialInstanceName(instance.getApi());
+                instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd() + " - " + imputServer);
+            } else {
+                instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd());
+            }
             instanceAccess = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\"><button>Use Instance</button></a>";
         }
 
