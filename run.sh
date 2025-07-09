@@ -39,7 +39,6 @@ require() {
 require git
 require mvn
 require java
-require jekyll
 require bundle
 
 # Java ≥ 21
