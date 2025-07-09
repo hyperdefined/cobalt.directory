@@ -36,24 +36,32 @@ public class StringUtil {
 
         // build each element for the table
         for (Instance instance : filtered) {
-            String frontEnd;
+            String instanceDisplay;
             String version = instance.getVersion();
             String services;
             if (instance.isApiWorking()) {
                 if (instance.getApi().contains("imput.net")) {
                     String imputServer = officialInstanceName(instance.getApi());
-                    frontEnd = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + " (" + imputServer + ")</a>";
+                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + " (" + imputServer + ")</a>";
                 } else {
-                    frontEnd = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
+                    if (instance.getFrontEnd() == null) {
+                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getApi() + "\">" + instance.getApi() + "</a>";
+                    } else {
+                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
+                    }
                 }
                 table.append("<tr class=\"").append(instance.getRating()).append("\">");
                 services = instance.getServiceCount(true) + "/" + instance.getTestResults().size();
             } else {
-                frontEnd = instance.getFrontEnd();
+                if (instance.getFrontEnd() == null) {
+                    instanceDisplay = instance.getApi();
+                } else {
+                    instanceDisplay = instance.getFrontEnd();
+                }
                 table.append("<tr class=\"offline\">");
                 services = "0/0";
             }
-            table.append("<td>").append(frontEnd).append("</td>");
+            table.append("<td>").append(instanceDisplay).append("</td>");
             table.append("<td>").append(version).append("</td>");
             table.append("<td>").append(services).append("</td>");
             // if the score is at least 0, that means we ran tests, link these tests
@@ -134,20 +142,28 @@ public class StringUtil {
         for (Map.Entry<Instance, Boolean> pair : workingInstances.entrySet()) {
             Instance instance = pair.getKey();
             boolean working = pair.getValue();
-            String frontEnd;
+            String instanceDisplay;
             if (instance.isApiWorking()) {
                 if (instance.getApi().contains("imput.net")) {
                     String imputServer = officialInstanceName(instance.getApi());
-                    frontEnd = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + " (" + imputServer + ")</a>";
+                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + " (" + imputServer + ")</a>";
                 } else {
-                    frontEnd = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
+                    if (instance.getFrontEnd() == null) {
+                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getApi() + "\">" + instance.getApi() + "</a>";
+                    } else {
+                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
+                    }
                 }
                 table.append("<tr class=\"").append(instance.getRating()).append("\">");
             } else {
-                frontEnd = instance.getFrontEnd();
+                if (instance.getFrontEnd() == null) {
+                    instanceDisplay = instance.getApi();
+                } else {
+                    instanceDisplay = instance.getFrontEnd();
+                }
                 table.append("<tr class=\"offline\">");
             }
-            table.append("<td>").append(frontEnd).append("</td>");
+            table.append("<td>").append(instanceDisplay).append("</td>");
             if (working) {
                 table.append("<td>").append("✅").append("</td>");
             } else {
