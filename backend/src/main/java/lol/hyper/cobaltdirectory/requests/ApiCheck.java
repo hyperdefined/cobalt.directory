@@ -154,6 +154,9 @@ public class ApiCheck {
             String remote = git.getString("remote");
             if (!remote.equalsIgnoreCase("imputnet/cobalt") && !remote.equalsIgnoreCase("wukko/cobalt")) {
                 logger.warn("{} is running a FORK, remote is {}", instance.getApi(), remote);
+                instance.setFork(true);
+            } else {
+                instance.setFork(false);
             }
         } else {
             logger.warn("{} is missing git information!", instance.getApi());

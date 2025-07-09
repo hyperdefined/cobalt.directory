@@ -26,6 +26,7 @@ public class Instance implements Comparable<Instance> {
     private boolean is10;
     private boolean turnstile = false;
     private String rating;
+    private boolean fork;
 
     private final List<TestResult> testResults = new ArrayList<>();
 
@@ -71,16 +72,8 @@ public class Instance implements Comparable<Instance> {
         return name;
     }
 
-    public int getCors() {
-        return cors;
-    }
-
     public String getApi() {
         return api;
-    }
-
-    public String getBranch() {
-        return branch;
     }
 
     public String getCommit() {
@@ -182,6 +175,14 @@ public class Instance implements Comparable<Instance> {
 
     public String getRating() {
         return rating;
+    }
+
+    public boolean isFork() {
+        return fork;
+    }
+
+    public void setFork(boolean fork) {
+        this.fork = fork;
     }
 
     public int getServiceCount(boolean status) {
