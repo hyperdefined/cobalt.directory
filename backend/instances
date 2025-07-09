@@ -8,7 +8,7 @@
 nachos.imput.net,cobalt.tools,https
 blossom.imput.net,cobalt.tools,https
 kityune.imput.net,cobalt.tools,https
-worm.imput.net,cobalt.tools,https
+#worm.imput.net,cobalt.tools,https
 sunny.imput.net,cobalt.tools,https
 noodle.imput.net,cobalt.tools,https
 cobalt-backend.canine.tools,cobalt.canine.tools,https
