@@ -53,8 +53,8 @@ public class Test {
             api = protocol + "://" + instance.getApi();
             // if the instance has turnstile, mark this test as failing
             if (instance.hasTurnstile() && authorization == null) {
-                logger.warn("Skipping {} test for {} because it has turnstile", service, api);
-                instance.addResult(new TestResult(service, false, "Uses Cloudflare turnstile, unable to test via API"));
+                logger.warn("Skipping {} test for {} because it has turnstile, and we don't have an API key", service, api);
+                instance.addResult(new TestResult(service, false, "Uses Cloudflare turnstile, unable to test via API (no API key)"));
                 return;
             }
         } else {
