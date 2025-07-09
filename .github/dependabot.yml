@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/backend"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10
+- package-ecosystem: bundler
+  directory: "/web"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 10

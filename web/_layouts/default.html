@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include head.html %}
+        {% include analytics.html %}
+    </head>
+    <body>
+        {% include navbar.html %}
+        {% unless page.url == "/" or page.url == "/index.html" %}
+            <h2>{{ page.title }}</h2>
+        {% endunless %}
+        {{ content }}
+        {% include footer.html %}
+    </body>
+</html>
