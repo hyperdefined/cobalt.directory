@@ -157,10 +157,10 @@ public class Test {
             if (status.equalsIgnoreCase("rate-limit") || errorMessage.contains("rate_exceeded")) {
                 if (attempts >= 5) {
                     logger.warn("Test FAIL for {} with {} - attempts limit REACHED with {} tries, time={}ms", api, service, attempts, time);
-                    instance.addResult(new TestResult(service, false, "Rate limited, max attempts reached"));
+                    instance.addResult(new TestResult(service, false, "Rate limited, max attempts reached (5)"));
                     return;
                 }
-                long secondsToWait = 3 + (attempts);
+                long secondsToWait = 10 + (attempts);
                 logger.warn("Test RATE-LIMITED for {} with {} - trying again in {} seconds, attempts={}, time={}ms", api, service, secondsToWait, attempts, time);
                 try {
                     Thread.sleep(secondsToWait * 1000);
