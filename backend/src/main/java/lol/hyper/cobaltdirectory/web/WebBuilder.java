@@ -55,16 +55,20 @@ public class WebBuilder {
         }
 
         // replace different placeholders with values we want
-        instanceTemplate = instanceTemplate.replaceAll("<api>", instance.getApi());
-        instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd());
         instanceTemplate = instanceTemplate.replaceAll("<hash>", instance.getHash());
         instanceTemplate = instanceTemplate.replaceAll("<time>", formattedDate);
-        if (instance.getFrontEnd() != null) {
-            String frontEnd = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\"><button>Use Instance</button></a>";
-            instanceTemplate = instanceTemplate.replaceAll("<frontend-button>", frontEnd);
+        // display an access button or how to use the API
+        // based on if the instance has web or not
+        String instanceAccess;
+        if (instance.getFrontEnd() == null) {
+            instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getApi());
+            instanceAccess = "This instance does not have a web version. To use this instance, change your processing server <a href=\"https://cobalt.tools/settings/instances#community\">here</a> to <code>" + instance.getApi() + "</code>";
         } else {
-            instanceTemplate = instanceTemplate.replaceAll("<frontend-button>", "");
+            instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd());
+            instanceAccess = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\"><button>Use Instance</button></a>";
         }
+
+        instanceTemplate = instanceTemplate.replaceAll("<access-button>", instanceAccess);
 
         // create the score table to display the services
         String scoreTable = StringUtil.buildScoreTable(instance);
