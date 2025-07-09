@@ -3,7 +3,7 @@ A site to track community [cobalt](https://github.com/imputnet/cobalt) instances
 
 ## How does it work?
 It loads a list of instances, then performs various tests to see if they work. It then calculates a score on how many tests were successful.
-You can see what tests it runs [here](https://github.com/hyperdefined/cobaltdirectory/blob/master/backend/tests.json).
+You can see what tests it runs [here](https://github.com/hyperdefined/cobalt.directory/blob/master/backend/tests.json).
 
 Load instances -> Make sure API/frontend exist -> Perform tests -> Build site.
 
@@ -21,4 +21,4 @@ You can:
 * ping `hyperdefined` in the [cobalt discord](https://discord.gg/pQPt8HBUPu).
 
 ## License
-This program is released under MIT License. See [LICENSE](https://github.com/hyperdefined/cobaltdirectory/blob/master/LICENSE).
+This program is released under MIT License. See [LICENSE](https://github.com/hyperdefined/cobalt.directory/blob/master/LICENSE).

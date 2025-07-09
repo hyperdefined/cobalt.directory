@@ -39,8 +39,9 @@ require jekyll
 require bundle
 
 # Java ≥ 21
-if (( "$(java -version 2>&1 | grep -Po '(?<=").+?(?=")')" < 21 )); then
-  echo "Java 21 or newer is required." >&2
+JAVA_MAJOR="$(java -version 2>&1 | awk -F'[\".]' '/version/ {print $2}')"
+if (( JAVA_MAJOR < 21 )); then
+  echo "Java 21 or newer is required (found ${JAVA_MAJOR})." >&2
   exit 1
 fi
 
@@ -52,11 +53,10 @@ export PATH="$GEM_HOME/bin:$PATH"
 git pull --ff-only
 cd "$BACKEND_DIR"
 mvn -q clean package
-cp "$BACKEND_DIR/target/CobaltTracker-latest.jar" .
+cp "$BACKEND_DIR/target/cobaltdirectory-latest.jar" .
 
 # ------------------------- Run Jar -----------------------------
-java -jar CobaltTracker-latest.jar web
-echo "✔ Backend tests executed."
+java -jar cobaltdirectory-latest.jar web
 
 # ------------------------- Jekyll Build ---------------------------
 cd "$WEB_DIR"
