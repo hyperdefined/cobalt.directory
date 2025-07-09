@@ -1,0 +1,5 @@
+{
+    "score_path": "../web/instance",
+    "web_path": "../web/",
+    "service_path": "../web/service"
+}

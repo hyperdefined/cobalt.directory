@@ -1,0 +1,16 @@
+# How to format:
+# api,frontend,protocol,trust
+# Do not include any slashes, just the domain names/IPs
+# For protocol, it's either http or https, whatever the instance uses.
+# For trust, all instance start as unknown
+
+# instances with domains
+nachos.imput.net,cobalt.tools,https
+blossom.imput.net,cobalt.tools,https
+kityune.imput.net,cobalt.tools,https
+worm.imput.net,cobalt.tools,https
+sunny.imput.net,cobalt.tools,https
+noodle.imput.net,cobalt.tools,https
+cobalt-backend.canine.tools,cobalt.canine.tools,https
+cobalt-api.kwiatekmiki.com,cobalt.kwiatekmiki.com,https
+cobalt-api.meowing.de,cobalt.meowing.de,https
