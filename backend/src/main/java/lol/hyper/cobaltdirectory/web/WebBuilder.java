@@ -66,7 +66,7 @@ public class WebBuilder {
         } else {
             if (instance.getApi().contains("imput.net")) {
                 String imputServer = StringUtil.officialInstanceName(instance.getApi());
-                instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd() + " - " + imputServer);
+                instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd() + " (" + imputServer + ")");
             } else {
                 instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd());
             }
