@@ -42,7 +42,7 @@ public class StringUtil {
             if (instance.isApiWorking()) {
                 if (instance.getApi().contains("imput.net")) {
                     String imputServer = officialInstanceName(instance.getApi());
-                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a> - " + imputServer;
+                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a> (" + imputServer + ")";
                 } else {
                     if (instance.getFrontEnd() == null) {
                         instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getApi() + "\">" + instance.getApi() + "</a>";
@@ -146,7 +146,7 @@ public class StringUtil {
             if (instance.isApiWorking()) {
                 if (instance.getApi().contains("imput.net")) {
                     String imputServer = officialInstanceName(instance.getApi());
-                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a> - " + imputServer;
+                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a> (" + imputServer + ")";
                 } else {
                     if (instance.getFrontEnd() == null) {
                         instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getApi() + "\">" + instance.getApi() + "</a>";
