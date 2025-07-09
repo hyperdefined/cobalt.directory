@@ -62,7 +62,7 @@ public class WebBuilder {
         String instanceAccess;
         if (instance.getFrontEnd() == null) {
             instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getApi());
-            instanceAccess = "This instance does not have a web version. To use this instance, change your processing server <a href=\"https://cobalt.tools/settings/instances#community\">here</a> to <code>" + instance.getApi() + "</code>";
+            instanceAccess = "This instance does not have a web version. To use this instance, change your processing server <a href=\"https://cobalt.tools/settings/instances#community\">here</a> to <code>" + instance.getProtocol() + "://" + instance.getApi() + "</code>.";
         } else {
             instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getFrontEnd());
             instanceAccess = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\"><button>Use Instance</button></a>";
