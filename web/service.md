@@ -10,6 +10,7 @@ You can see what instances work on what service below.
 * [Facebook]({{ site.url}}/service/facebook)
 * [Instagram]({{ site.url}}/service/instagram)
 * [Loom]({{ site.url}}/service/loom)
+* [Newgrounds]({{ site.url}}/service/newgrounds)
 * [Odnoklassniki]({{ site.url}}/service/odnoklassniki)
 * [Pinterest]({{ site.url}}/service/pinterest)
 * [RUTUBE]({{ site.url}}/service/rutube)
