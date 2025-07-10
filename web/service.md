@@ -1,7 +1,7 @@
 ---
 permalink: "/service/"
 title: "Services"
-description: "all services cobalt can download."
+description: "All services cobalt and download and their status per instance."
 ---
 You can see what instances work on what service below.
 * [BiliBili]({{ site.url}}/service/bilibili)
