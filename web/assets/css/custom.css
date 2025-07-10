@@ -28,6 +28,12 @@ footer > *:last-child {
     margin-top: 0;
 }
 
+h1 {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+}
+
 .table-container {
     max-width: 100%;
     overflow-x: auto;
@@ -117,3 +123,16 @@ header h1 {
         background: rgb(25, 25, 25);
     }
 }
+
+
+@media (max-width: 500px) {
+    h1 {
+      font-size: 1.5rem;
+    }
+    h2 {
+        font-size: 1.25rem;
+    }
+    body {
+        font-size: 0.8rem;
+    }
+  }
