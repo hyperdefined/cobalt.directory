@@ -74,6 +74,7 @@ public class WebBuilder {
         }
 
         instanceTemplate = instanceTemplate.replaceAll("<access-button>", instanceAccess);
+        instanceTemplate = instanceTemplate.replaceAll("<api-url>", "API URL for this instance is <code>" + instance.getProtocol() + "://" + instance.getApi() + "</code>.");
 
         // create the score table to display the services
         String scoreTable = StringUtil.buildScoreTable(instance);
