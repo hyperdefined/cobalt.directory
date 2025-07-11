@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Test {
@@ -160,7 +161,8 @@ public class Test {
                     instance.addResult(new TestResult(service, false, "Rate limited, max attempts reached (5)"));
                     return;
                 }
-                long secondsToWait = 10 + (attempts);
+                Random rand = new Random();
+                int secondsToWait = rand.nextInt(20 - 10 + 1) + 10;
                 logger.warn("Test RATE-LIMITED for {} with {} - trying again in {} seconds, attempts={}, time={}ms", api, service, secondsToWait, attempts, time);
                 try {
                     Thread.sleep(secondsToWait * 1000);
