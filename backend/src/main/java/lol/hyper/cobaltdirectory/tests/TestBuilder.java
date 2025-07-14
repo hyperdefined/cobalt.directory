@@ -1,7 +1,6 @@
 package lol.hyper.cobaltdirectory.tests;
 
 import lol.hyper.cobaltdirectory.requests.ApiCheck;
-import lol.hyper.cobaltdirectory.requests.Test;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

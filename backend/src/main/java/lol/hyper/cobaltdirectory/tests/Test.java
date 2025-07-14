@@ -1,7 +1,9 @@
-package lol.hyper.cobaltdirectory.requests;
+package lol.hyper.cobaltdirectory.tests;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
 import lol.hyper.cobaltdirectory.instance.Instance;
+import lol.hyper.cobaltdirectory.requests.RequestResults;
+import lol.hyper.cobaltdirectory.utils.RequestUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
