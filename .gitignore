@@ -50,7 +50,7 @@ web/web-output
 ### Backend Module ##
 logs/
 backend/target
-backend/instances.json
+backend/results.json
 backend/removed_instances
 backend/instances_private
 CobaltDirectory-*.jar

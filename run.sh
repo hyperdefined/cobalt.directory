@@ -33,4 +33,5 @@ cp "$BACKEND_DIR/target/cobaltdirectory-latest.jar" .
 
 # ------------------------- Run Jar -----------------------------
 echo "Running $BACKEND_DIR/cobaltdirectory-latest.jar"
-java -jar cobaltdirectory-latest.jar
+java -jar cobaltdirectory-latest.jar web=false
+echo "Finished with tests! Output is located at $BACKEND_DIR/results.json"
