@@ -108,8 +108,15 @@ public class CobaltDirectory {
                 String token = null;
                 String api = instance.getApi();
                 logger.info("{} is ONLINE", instance.getApi());
+                boolean apiKey = init.getApiKeys().has(api);
+                // if turnstile is enabled, and we have no API key
+                // skip tests since we can't do anything
+                boolean skipTests = instance.hasTurnstile() && !apiKey;
+                if (skipTests) {
+                    logger.warn("Skipping ALL tests for {} since it has Cloudflare turnstile and we have no API key", api);
+                }
                 // if we have an API key for this instance, use it for tests
-                if (init.getApiKeys().has(api)) {
+                if (apiKey) {
                     logger.info("Found API key for {}, will use it for requests", api);
                     token = init.getApiKeys().getString(api);
                 }
@@ -117,8 +124,14 @@ public class CobaltDirectory {
                 for (Map.Entry<String, String> tests : services.getTests().entrySet()) {
                     String service = tests.getKey();
                     String url = tests.getValue();
-                    Test test = new Test(instance, service, url, token);
-                    testsToRun.add(test);
+                    // skip the tests
+                    if (skipTests) {
+                        TestResult skippedTest = new TestResult(service, false, "Uses Cloudflare turnstile, unable to test via API (no API key)");
+                        instance.addResult(skippedTest);
+                    } else {
+                        Test test = new Test(instance, service, url, token);
+                        testsToRun.add(test);
+                    }
                 }
                 // if the frontend is not null, add it to the tests
                 if (instance.getFrontEnd() != null) {
