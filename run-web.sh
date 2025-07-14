@@ -9,7 +9,7 @@ if [[ $# -ne 1 ]]; then
   exit 1
 fi
 
-OUTPUT_DIR="$2"
+OUTPUT_DIR="$1"
 
 # ------------------------- Paths -------------------------------
 PROJECT_ROOT="$(pwd)"
