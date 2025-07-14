@@ -73,6 +73,10 @@ public class WebBuilder {
             instanceAccess = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\"><button>Use Instance</button></a>";
         }
 
+        // replace some elements on the page
+        if (instance.isFork()) {
+            instanceTemplate = instanceTemplate.replaceAll("<access-button>", "**This community instance is running a fork. There may be changes not present in the official instance.**\n\n<access-button>");
+        }
         instanceTemplate = instanceTemplate.replaceAll("<access-button>", instanceAccess);
         instanceTemplate = instanceTemplate.replaceAll("<api-url>", "API URL for this instance is <code>" + instance.getProtocol() + "://" + instance.getApi() + "</code>.");
 
