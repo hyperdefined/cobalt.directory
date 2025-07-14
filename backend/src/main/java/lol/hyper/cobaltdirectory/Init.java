@@ -54,18 +54,19 @@ public class Init {
             logger.error("Exception while loading config", e);
         }
 
-        // load files
-        if (args.length == 0) {
-            logger.info("Using default instances file");
-            setupFiles("instances");
-            return;
+        // parse the args
+        String instanceFile = "instances"; // this is the default
+        for (String arg : args) {
+            String[] parts = arg.split("=", 2);
+            String key = parts[0];
+            String value = parts[1];
+            if (key.equalsIgnoreCase("instances")) {
+                instanceFile = value;
+            }
         }
 
-        if (args.length == 1) {
-            String instanceFile = args[0];
-            logger.info("Custom instances path found, using {}", instanceFile);
-            setupFiles(instanceFile);
-        }
+        // load files
+        setupFiles(instanceFile);
     }
 
     public JSONObject getConfig() {
