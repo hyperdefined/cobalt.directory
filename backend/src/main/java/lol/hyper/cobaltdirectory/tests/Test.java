@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -156,6 +157,8 @@ public class Test {
             } else {
                 errorMessage = "Unknown error, could not parse error from API";
             }
+
+            errorMessage = Jsoup.parse(errorMessage).text();
             // if we got rate limited, rerun the test in a few seconds
             if (status.equalsIgnoreCase("rate-limit") || errorMessage.contains("rate_exceeded")) {
                 if (attempts >= 5) {
