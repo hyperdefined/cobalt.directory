@@ -2,6 +2,7 @@ package lol.hyper.cobaltdirectory.requests;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
 import lol.hyper.cobaltdirectory.instance.Instance;
+import lol.hyper.cobaltdirectory.utils.RequestUtil;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

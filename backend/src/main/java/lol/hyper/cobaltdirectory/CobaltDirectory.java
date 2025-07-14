@@ -2,8 +2,8 @@ package lol.hyper.cobaltdirectory;
 
 import lol.hyper.cobaltdirectory.instance.Instance;
 import lol.hyper.cobaltdirectory.requests.ApiCheck;
-import lol.hyper.cobaltdirectory.requests.Test;
-import lol.hyper.cobaltdirectory.requests.TestResult;
+import lol.hyper.cobaltdirectory.tests.Test;
+import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.services.Services;
 import lol.hyper.cobaltdirectory.tests.TestBuilder;
 import lol.hyper.cobaltdirectory.utils.FileUtil;

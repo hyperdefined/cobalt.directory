@@ -1,7 +1,7 @@
 package lol.hyper.cobaltdirectory.utils;
 
 import lol.hyper.cobaltdirectory.instance.Instance;
-import lol.hyper.cobaltdirectory.requests.TestResult;
+import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.services.Services;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;

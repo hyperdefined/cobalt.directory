@@ -1,6 +1,6 @@
 package lol.hyper.cobaltdirectory.instance;
 
-import lol.hyper.cobaltdirectory.requests.TestResult;
+import lol.hyper.cobaltdirectory.tests.TestResult;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

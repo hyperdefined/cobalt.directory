@@ -1,7 +1,7 @@
 package lol.hyper.cobaltdirectory.services;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
-import lol.hyper.cobaltdirectory.utils.XiaohongshuTest;
+import lol.hyper.cobaltdirectory.tests.XiaohongshuTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;

@@ -1,7 +1,7 @@
-package lol.hyper.cobaltdirectory.utils;
+package lol.hyper.cobaltdirectory.tests;
 
 import lol.hyper.cobaltdirectory.requests.RequestResults;
-import lol.hyper.cobaltdirectory.requests.RequestUtil;
+import lol.hyper.cobaltdirectory.utils.RequestUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

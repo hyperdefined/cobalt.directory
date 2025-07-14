@@ -1,6 +1,7 @@
-package lol.hyper.cobaltdirectory.requests;
+package lol.hyper.cobaltdirectory.utils;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
+import lol.hyper.cobaltdirectory.requests.RequestResults;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
