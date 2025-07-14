@@ -22,6 +22,7 @@ public class Init {
     private JSONObject config;
     private JSONObject tests;
     private JSONObject apiKeys;
+    private boolean makeWeb = false;
     private List<String> instanceFileContents;
 
     public void start(String[] args) {
@@ -63,6 +64,9 @@ public class Init {
             if (key.equalsIgnoreCase("instances")) {
                 instanceFile = value;
             }
+            if (key.equalsIgnoreCase("web")) {
+                makeWeb = Boolean.parseBoolean(value);
+            }
         }
 
         // load files
@@ -87,6 +91,10 @@ public class Init {
 
     public List<String> getInstanceFileContents() {
         return instanceFileContents;
+    }
+
+    public boolean makeWeb() {
+        return makeWeb;
     }
 
     /**
@@ -144,7 +152,7 @@ public class Init {
         logger.info("Using api keys file: {}", apiKeysFile.getAbsolutePath());
         instanceFileContents = FileUtil.readRawFile(instancesFile);
         if (instanceFileContents.isEmpty()) {
-            logger.error("Instance file returned empty. Does it exist?");
+            logger.error("{} exists, but it's empty?", instanceFile);
             System.exit(1);
         }
         String testUrlContents = FileUtil.readFile(testUrlsFile);

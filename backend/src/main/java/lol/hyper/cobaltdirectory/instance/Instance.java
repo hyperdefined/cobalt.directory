@@ -16,8 +16,6 @@ public class Instance implements Comparable<Instance> {
     private String version;
     private String commit;
     private String branch;
-    private String name;
-    private int cors;
     private long startTime;
     private boolean apiWorking;
     private boolean frontEndWorking;
@@ -41,9 +39,7 @@ public class Instance implements Comparable<Instance> {
         instanceJSON.put("version", this.version);
         instanceJSON.put("commit", this.commit);
         instanceJSON.put("branch", this.branch);
-        instanceJSON.put("name", this.name);
         instanceJSON.put("api", this.api);
-        instanceJSON.put("cors", this.cors);
         instanceJSON.put("startTime", Long.valueOf(this.startTime));
         instanceJSON.put("api_online", this.apiWorking);
         instanceJSON.put("frontend_online", this.frontEndWorking);
@@ -68,10 +64,6 @@ public class Instance implements Comparable<Instance> {
         return this.api;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getApi() {
         return api;
     }
@@ -94,14 +86,6 @@ public class Instance implements Comparable<Instance> {
 
     public void setCommit(String commit) {
         this.commit = commit;
-    }
-
-    public void setCors(int cors) {
-        this.cors = cors;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setStartTime(long startTime) {
@@ -217,10 +201,8 @@ public class Instance implements Comparable<Instance> {
 
     public void setOffline() {
         this.setApiWorking(false);
-        this.setName("Offline");
         this.setCommit("Offline");
         this.setBranch("Offline");
-        this.setName("Offline");
         this.setVersion("Offline");
     }
 

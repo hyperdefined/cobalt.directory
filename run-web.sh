@@ -50,7 +50,7 @@ cp "$BACKEND_DIR/target/cobaltdirectory-latest.jar" .
 
 # ------------------------- Run Jar -----------------------------
 echo "Running $BACKEND_DIR/cobaltdirectory-latest.jar"
-java -jar cobaltdirectory-latest.jar
+java -jar cobaltdirectory-latest.jar web=true
 
 # ------------------------- Jekyll Build ---------------------------
 cd "$WEB_DIR"

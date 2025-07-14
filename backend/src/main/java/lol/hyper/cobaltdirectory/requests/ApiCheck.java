@@ -99,10 +99,6 @@ public class ApiCheck {
             return;
         }
 
-        if (json.has("name")) {
-            String name = json.getString("name");
-            instance.setName(StringEscapeUtils.escapeHtml4(name));
-        }
         if (json.has("commit")) {
             String commit = json.getString("commit");
             instance.setCommit(StringEscapeUtils.escapeHtml4(commit));
@@ -110,15 +106,6 @@ public class ApiCheck {
         if (json.has("branch")) {
             String branch = json.getString("branch");
             instance.setBranch(StringEscapeUtils.escapeHtml4(branch));
-        }
-        if (json.has("cors")) {
-            int cors = json.getInt("cors");
-            if (cors == 0 || cors == 1) {
-                instance.setCors(cors);
-            } else {
-                instance.setCors(-1);
-                logger.warn("{} has an invalid cors!", api);
-            }
         }
         if (json.has("startTime")) {
             String startTimeString = String.valueOf(json.getLong("startTime"));
@@ -134,7 +121,6 @@ public class ApiCheck {
     private void loadNewApi(JSONObject response) {
         instance.setIs10(true);
         JSONObject cobalt = response.getJSONObject("cobalt");
-        instance.setName("N/A");
         if (cobalt.has("version")) {
             String version = cobalt.get("version").toString();
             instance.setVersion(StringEscapeUtils.escapeHtml4(version));
@@ -146,7 +132,6 @@ public class ApiCheck {
             instance.setStartTime(cobalt.getLong("startTime"));
         }
 
-        instance.setCors(1);
         // some people remove this for no reason
         if (response.has("git")) {
             JSONObject git = response.getJSONObject("git");

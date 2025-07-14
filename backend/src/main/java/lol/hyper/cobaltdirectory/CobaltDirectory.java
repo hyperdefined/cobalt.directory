@@ -6,6 +6,7 @@ import lol.hyper.cobaltdirectory.requests.Test;
 import lol.hyper.cobaltdirectory.requests.TestResult;
 import lol.hyper.cobaltdirectory.services.Services;
 import lol.hyper.cobaltdirectory.tests.TestBuilder;
+import lol.hyper.cobaltdirectory.utils.FileUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
 import lol.hyper.cobaltdirectory.web.WebBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +39,8 @@ public class CobaltDirectory {
 
         Init init = new Init();
         init.start(args);
+        // should we make the pages for web?
+        boolean makeWeb = init.makeWeb();
 
         // load the config
         config = init.getConfig();
@@ -141,6 +145,9 @@ public class CobaltDirectory {
         // check for dupes
         findDuplicates(instances);
 
+        JSONObject instancesResults = new JSONObject();
+        File instancesResultsFile = new File("results.json");
+
         Map<String, TestCounter> testResults = new HashMap<>();
         for (Instance instance : instances) {
             if (!instance.isApiWorking()) {
@@ -154,8 +161,12 @@ public class CobaltDirectory {
                 if (r.status()) c.success++;
             }
 
+            instancesResults.put(instance.getApi(), instance.toJSON());
+
             // write each instance page
-            WebBuilder.buildInstancePage(instance, formattedDate);
+            if (makeWeb) {
+                WebBuilder.buildInstancePage(instance, formattedDate);
+            }
         }
 
         // sort the instances by score
@@ -172,11 +183,16 @@ public class CobaltDirectory {
         logger.info("Oldest instance is: {}, starTime={}", oldestInstance.getApi(), oldestInstance.getStartTime());
 
         // write index and service pages
-        WebBuilder.buildIndex(instances, formattedDate);
-        for (String service : services.getTests().keySet()) {
-            String slug = Services.makeSlug(service);
-            WebBuilder.buildServicePage(instances, formattedDate, service, slug);
+        if (makeWeb) {
+            WebBuilder.buildIndex(instances, formattedDate);
+            for (String service : services.getTests().keySet()) {
+                String slug = Services.makeSlug(service);
+                WebBuilder.buildServicePage(instances, formattedDate, service, slug);
+            }
         }
+
+        logger.info("Saving results to {}", instancesResultsFile.getAbsolutePath());
+        FileUtil.writeFile(instancesResults.toString(), instancesResultsFile);
 
         // display how long the test took
         long endTime = System.nanoTime();
@@ -201,7 +217,7 @@ public class CobaltDirectory {
             if (duplicates.size() > 1) {
                 logger.warn("!!! Duplicate start time {} found !!!", entry.getKey());
                 for (Instance inst : duplicates) {
-                    logger.warn("- {}", inst.getName());
+                    logger.warn("- {}", inst.getApi());
                 }
             }
         }
