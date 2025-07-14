@@ -46,6 +46,7 @@ public class Instance implements Comparable<Instance> {
         instanceJSON.put("frontEnd", Objects.requireNonNullElse(frontEnd, "None"));
         instanceJSON.put("protocol", protocol);
         instanceJSON.put("score", score);
+        instanceJSON.put("fork", fork);
         instanceJSON.put("turnstile", turnstile);
         JSONObject workingServices = new JSONObject();
         for (TestResult result : testResults) {
