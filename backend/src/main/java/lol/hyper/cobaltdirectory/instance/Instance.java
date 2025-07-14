@@ -152,7 +152,6 @@ public class Instance implements Comparable<Instance> {
         return startTime;
     }
 
-
     public String getRating() {
         return rating;
     }

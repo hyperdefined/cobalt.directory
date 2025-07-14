@@ -45,7 +45,7 @@ public class Test {
         } else {
             logger.info("Test FAIL for checking frontend {} ", testUrl);
         }
-        instance.addResult(new TestResult(service, validFrontEnd, null));
+        instance.addResult(new TestResult(service, validFrontEnd, "Working"));
         instance.setFrontEndWorking(validFrontEnd);
     }
 
@@ -55,12 +55,6 @@ public class Test {
         String api;
         if (instance.is10()) {
             api = protocol + "://" + instance.getApi();
-            // if the instance has turnstile, mark this test as failing
-            if (instance.hasTurnstile() && authorization == null) {
-                logger.warn("Skipping {} test for {} because it has turnstile, and we don't have an API key", service, api);
-                instance.addResult(new TestResult(service, false, "Uses Cloudflare turnstile, unable to test via API (no API key)"));
-                return;
-            }
         } else {
             api = protocol + "://" + instance.getApi() + "/api/json";
         }
@@ -83,7 +77,7 @@ public class Test {
             instance.addResult(new TestResult(service, false, "Response content returned null from API"));
             return;
         }
-        // make sure the json response is valid
+        // make sure we can parse the response from the API
         JSONObject jsonResponse;
         try {
             jsonResponse = new JSONObject(content);
@@ -113,10 +107,12 @@ public class Test {
 
             // if the API's status was redirect/stream/tunnel/success/picker, it was successful at the request
             if (status.equalsIgnoreCase("redirect") || status.equalsIgnoreCase("stream") || status.equalsIgnoreCase("success") || status.equalsIgnoreCase("picker") || status.equalsIgnoreCase("tunnel")) {
-                // check the real media's size
-                // if it's zero, it's a fail
+                // if the response was tunnel or stream, check the headers
+                // cobalt has content-length and estimated-content-length headers
+                // they report how big the media is
                 if (status.equalsIgnoreCase("tunnel") || status.equalsIgnoreCase("stream")) {
                     // make sure the tunnel link returns the correct domain
+                    // some APIs never do this
                     String tunnelUrl = StringUtil.rewrite(jsonResponse.getString("url"), instance.getApi(), protocol);
                     long size = RequestUtil.checkTunnelLength(tunnelUrl);
                     // headers returned valid length
@@ -125,16 +121,16 @@ public class Test {
                         instance.addResult(new TestResult(service, true, "Working, returned valid status, and has valid content-length header"));
                         return;
                     }
+                    // headers reported 0 content length, which means it failed
                     if (size == 0) {
-                        // headers reported 0 content length
                         logger.warn("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
                         instance.addResult(new TestResult(service, false, "Not working, content-length header is 0"));
                         return;
                     }
+                    // there were no headers in the response
                     if (size == -1) {
-                        // there were no headers in the response
                         logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
-                        instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header was found"));
+                        instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
                     }
                 } else {
                     logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
@@ -158,14 +154,17 @@ public class Test {
                 errorMessage = "Unknown error, could not parse error from API";
             }
 
+            // older cobalt shows error messages with HTML, parse it out
             errorMessage = Jsoup.parse(errorMessage).text();
             // if we got rate limited, rerun the test in a few seconds
             if (status.equalsIgnoreCase("rate-limit") || errorMessage.contains("rate_exceeded")) {
+                // we maxed out the attempts for us to care
                 if (attempts >= 5) {
                     logger.warn("Test FAIL for {} with {} - attempts limit REACHED with {} tries, time={}ms", api, service, attempts, time);
                     instance.addResult(new TestResult(service, false, "Rate limited, max attempts reached (5)"));
                     return;
                 }
+                // retry again, but randomize the time to prevent more rate limits
                 Random rand = new Random();
                 int secondsToWait = rand.nextInt(20 - 10 + 1) + 10;
                 logger.warn("Test RATE-LIMITED for {} with {} - trying again in {} seconds, attempts={}, time={}ms", api, service, secondsToWait, attempts, time);
@@ -174,9 +173,13 @@ public class Test {
                     runApiTest();
                 } catch (InterruptedException interruptedException) {
                     logger.error("Rate-limit retry interrupted for {} with {}", api, service, interruptedException);
+                    instance.addResult(new TestResult(service, false, interruptedException.toString()));
+                    return;
                 }
                 return;
             }
+            // test failed for xyz reason
+            // this is a regular cobalt fail
             logger.warn("Test FAIL for {} with {} - HTTP {}, status=error, reason={}, time={}ms", api, service, responseCode, errorMessage, time);
             instance.addResult(new TestResult(service, false, errorMessage));
         }
