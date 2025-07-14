@@ -26,8 +26,11 @@ fi
 # ------------------------- Build Jar -----------------------------
 git pull --ff-only
 cd "$BACKEND_DIR"
+echo "Building jar..."
 mvn -q clean package
+echo "Moving jar to $BACKEND_DIR"
 cp "$BACKEND_DIR/target/cobaltdirectory-latest.jar" .
 
 # ------------------------- Run Jar -----------------------------
+echo "Running $BACKEND_DIR/cobaltdirectory-latest.jar"
 java -jar cobaltdirectory-latest.jar

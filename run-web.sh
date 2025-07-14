@@ -10,6 +10,7 @@ if [[ $# -ne 1 ]]; then
 fi
 
 OUTPUT_DIR="$1"
+echo "Web output is $1"
 
 # ------------------------- Paths -------------------------------
 PROJECT_ROOT="$(pwd)"
@@ -42,21 +43,27 @@ fi
 # ------------------------- Build Jar -----------------------------
 git pull --ff-only
 cd "$BACKEND_DIR"
+echo "Building jar..."
 mvn -q clean package
+echo "Moving jar to $BACKEND_DIR"
 cp "$BACKEND_DIR/target/cobaltdirectory-latest.jar" .
 
 # ------------------------- Run Jar -----------------------------
+echo "Running $BACKEND_DIR/cobaltdirectory-latest.jar"
 java -jar cobaltdirectory-latest.jar
 
 # ------------------------- Jekyll Build ---------------------------
 cd "$WEB_DIR"
+echo "Installing Gems..."
 bundle install --quiet
+echo "Building Jekyll site..."
 bundle exec jekyll build
 
 # ------------------------- Copy Output -------------------------
 mkdir -p "$OUTPUT_DIR"
 # clean target directory but preserve it
 find "$OUTPUT_DIR" -mindepth 1 -delete
+echo "Moving build output to $OUTPUT_DIR"
 cp -r "_site/"* "$OUTPUT_DIR/"
 
 # ------------------------- Cleanup -------------------------------------
