@@ -52,5 +52,6 @@ logs/
 backend/target
 backend/instances.json
 backend/removed_instances
+backend/instances_private
 CobaltDirectory-*.jar
 backend/apikeys.json
