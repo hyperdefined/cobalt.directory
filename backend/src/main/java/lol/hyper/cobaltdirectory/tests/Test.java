@@ -41,11 +41,12 @@ public class Test {
     private void runFrontEndTest() {
         boolean validFrontEnd = RequestUtil.testFrontEnd(testUrl);
         if (validFrontEnd) {
+            instance.addResult(new TestResult(service, true, "Working"));
             logger.info("Test PASS for checking frontend {} ", testUrl);
         } else {
             logger.info("Test FAIL for checking frontend {} ", testUrl);
+            instance.addResult(new TestResult(service, false, null));
         }
-        instance.addResult(new TestResult(service, validFrontEnd, "Working"));
         instance.setFrontEndWorking(validFrontEnd);
     }
 
@@ -167,7 +168,7 @@ public class Test {
                 // retry again, but randomize the time to prevent more rate limits
                 Random rand = new Random();
                 int secondsToWait = rand.nextInt(20 - 10 + 1) + 10;
-                logger.warn("Test RATE-LIMITED for {} with {} - trying again in {} seconds, attempts={}, time={}ms", api, service, secondsToWait, attempts, time);
+                logger.warn("Test RATE-LIMITED for {} with {} attempts={}, time={}ms - trying again in {} seconds", api, service, attempts, time, secondsToWait);
                 try {
                     Thread.sleep(secondsToWait * 1000);
                     runApiTest();
