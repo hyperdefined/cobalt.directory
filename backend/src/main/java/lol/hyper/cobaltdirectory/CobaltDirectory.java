@@ -36,7 +36,7 @@ public class CobaltDirectory {
         logger.info("Running with args: {}", Arrays.toString(args));
 
         Init init = new Init();
-        init.start();
+        init.start(args);
 
         // load the config
         config = init.getConfig();

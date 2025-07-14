@@ -24,7 +24,7 @@ public class Init {
     private JSONObject apiKeys;
     private List<String> instanceFileContents;
 
-    public void start() {
+    public void start(String[] args) {
         // load the git information
         String commit = null;
         try {
@@ -48,10 +48,24 @@ public class Init {
         logger.info("Total available threads: {}", availableThreads);
 
         // load the config
-        loadConfig();
+        try {
+            loadConfig();
+        } catch (Exception e) {
+            logger.error("Exception while loading config", e);
+        }
 
         // load files
-        setupFiles();
+        if (args.length == 0) {
+            logger.info("Using default instances file");
+            setupFiles("instances");
+            return;
+        }
+
+        if (args.length == 1) {
+            String instanceFile = args[0];
+            logger.info("Custom instances path found, using {}", instanceFile);
+            setupFiles(instanceFile);
+        }
     }
 
     public JSONObject getConfig() {
@@ -107,7 +121,6 @@ public class Init {
             config.put("web_path", "../web/");
             config.put("score_path", "../web/instance");
             config.put("service_path", "../web/service");
-            config.put("instances_json_output", "instances.json");
             logger.warn("Config file does not exist! Creating default...");
             FileUtil.writeFile(config.toString(4), new File("config.json"));
         }
@@ -120,11 +133,14 @@ public class Init {
         config = new JSONObject(contents);
     }
 
-    private void setupFiles() {
+    private void setupFiles(String instanceFile) {
         // load some files
-        File instancesFile = new File("instances");
+        File instancesFile = new File(instanceFile);
         File testUrlsFile = new File("tests.json");
         File apiKeysFile = new File("apikeys.json");
+        logger.info("Using instances file: {}", instancesFile.getAbsolutePath());
+        logger.info("Using tests file: {}", testUrlsFile.getAbsolutePath());
+        logger.info("Using api keys file: {}", apiKeysFile.getAbsolutePath());
         instanceFileContents = FileUtil.readRawFile(instancesFile);
         if (instanceFileContents.isEmpty()) {
             logger.error("Instance file returned empty. Does it exist?");
