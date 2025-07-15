@@ -65,7 +65,7 @@ public class ApiCheck {
             responseContent = RequestUtil.requestJSON(url).responseContent();
             // if it fails to load any content
             if (responseContent == null) {
-                logger.warn("Response null for {} on /api/serverInfo", api);
+                logger.warn("Response null for {} on /api/serverInfo after checking root", api);
                 instance.setOffline();
                 return;
             }

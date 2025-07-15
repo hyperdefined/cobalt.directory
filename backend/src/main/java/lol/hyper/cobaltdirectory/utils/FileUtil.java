@@ -62,7 +62,7 @@ public class FileUtil {
         List<String> contents = new ArrayList<>();
         try (LineIterator it = FileUtils.lineIterator(file, "UTF-8")) {
             while (it.hasNext()) {
-                String line = it.nextLine();
+                String line = it.next();
                 // skip lines that have comment/whitespace
                 if (line.startsWith("#") || line.trim().isEmpty()) {
                     continue;
