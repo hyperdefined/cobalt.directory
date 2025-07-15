@@ -37,8 +37,8 @@ public class RequestUtil {
         try {
             StringBuilder stringBuilder;
             BufferedReader reader;
-            URL urlFixed = new URL(url);
-            connection = (HttpURLConnection) urlFixed.openConnection();
+            URI urlFixed = new URI(url);
+            connection = (HttpURLConnection) urlFixed.toURL().openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
@@ -101,7 +101,7 @@ public class RequestUtil {
         String rawJSON;
         HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) new URL(url).openConnection();
+            connection = (HttpURLConnection) new URI(url).toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.USER_AGENT);
             connection.setConnectTimeout(20000);
             connection.setReadTimeout(20000);
@@ -122,7 +122,7 @@ public class RequestUtil {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             rawJSON = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             logger.error("Unable to connect to or read from {}", url, exception);
             return new RequestResults(null, -1, null, exception);
         } finally {
@@ -147,8 +147,8 @@ public class RequestUtil {
         int response;
         HttpURLConnection connection = null;
         try {
-            URL connectUrl = new URL(url);
-            connection = (HttpURLConnection) connectUrl.openConnection();
+            URI connectUrl = new URI(url);
+            connection = (HttpURLConnection) connectUrl.toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.USER_AGENT);
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(20000);
@@ -176,7 +176,7 @@ public class RequestUtil {
                     }
                 }
             }
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             logger.error("Unable to read URL {}", url, exception);
             return false;
         } finally {
@@ -226,15 +226,15 @@ public class RequestUtil {
     public static long checkTunnelLength(String urlString) {
         HttpURLConnection connection = null;
         try {
-            URL connectUrl = new URL(urlString);
-            connection = (HttpURLConnection) connectUrl.openConnection();
+            URI connectUrl = new URI(urlString);
+            connection = (HttpURLConnection) connectUrl.toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.USER_AGENT);
             connection.setRequestMethod("HEAD");
             connection.setConnectTimeout(20000);
             connection.setReadTimeout(20000);
             connection.connect();
             return extractLength(connection);
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             logger.error("Unable to read URL {}", urlString, exception);
             return -1;
         } finally {
@@ -255,7 +255,7 @@ public class RequestUtil {
         HttpURLConnection connection = null;
         int code;
         try {
-            connection = (HttpURLConnection) new URL(url).openConnection();
+            connection = (HttpURLConnection) new URI(url).toURL().openConnection();
             connection.setRequestProperty("User-Agent", userAgent);
             connection.setConnectTimeout(20000);
             connection.setReadTimeout(20000);
@@ -278,7 +278,7 @@ public class RequestUtil {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             content = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             logger.error("Unable to connect to or read from {}", url, exception);
             return new RequestResults(null, -1, null, exception);
         } finally {
