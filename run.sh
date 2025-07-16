@@ -15,6 +15,7 @@ require() {
 }
 require git
 require java
+require mvn
 
 # Java ≥ 21
 JAVA_MAJOR="$(java -version 2>&1 | awk -F'[\".]' '/version/ {print $2}')"

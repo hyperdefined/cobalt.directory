@@ -3,13 +3,14 @@
 set -euo pipefail
 
 # ------------------------- Arguments ----------------------------
-if [[ $# -ne 1 ]]; then
-  echo "Error: Missing web output path." >&2
-  echo "Usage: $0 <output_dir>" >&2
+if [[ $# -ne 2 ]]; then
+  echo "Error: Missing args." >&2
+  echo "Usage: $0 <output_dir> production/development" >&2
   exit 1
 fi
 
 OUTPUT_DIR="$1"
+export JEKYLL_ENV="$2"
 echo "Web output is $1"
 
 # ------------------------- Paths -------------------------------
