@@ -187,7 +187,7 @@ public class CobaltDirectory {
 
         // get the longest running instance for fun
         Instance oldestInstance = instances.stream()
-                .filter(Instance::isApiWorking)
+                .filter(Instance::isApiWorking).filter(instance -> instance.getStartTime() != 0)
                 .min(Comparator.comparingLong(Instance::getStartTime))
                 .orElseThrow(() -> new IllegalStateException("No instance with a valid startTime"));
 
