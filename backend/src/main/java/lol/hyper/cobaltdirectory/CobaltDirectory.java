@@ -139,7 +139,7 @@ public class CobaltDirectory {
                     testsToRun.add(frontEndTest);
                 }
             } else {
-                logger.info("{} is OFFLINE", instance.getApi());
+                logger.warn("{} is OFFLINE", instance.getApi());
             }
         }
 
