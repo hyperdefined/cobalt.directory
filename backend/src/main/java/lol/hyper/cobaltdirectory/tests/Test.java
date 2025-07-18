@@ -124,13 +124,13 @@ public class Test {
                     }
                     // headers reported 0 content length, which means it failed
                     if (size == 0) {
-                        logger.warn("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
+                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
                         instance.addResult(new TestResult(service, false, "Not working, content-length header is 0"));
                         return;
                     }
                     // there were no headers in the response
                     if (size == -1) {
-                        logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
+                        logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
                         instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
                     }
                 } else {
@@ -138,7 +138,7 @@ public class Test {
                     instance.addResult(new TestResult(service, true, "Working, returned valid status"));
                 }
             } else {
-                logger.info("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
+                logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
                 instance.addResult(new TestResult(service, false, "Status returned " + status));
             }
         } else {
@@ -161,7 +161,7 @@ public class Test {
             if (status.equalsIgnoreCase("rate-limit") || errorMessage.contains("rate_exceeded")) {
                 // we maxed out the attempts for us to care
                 if (attempts >= 5) {
-                    logger.warn("Test FAIL for {} with {} - attempts limit REACHED with {} tries, time={}ms", api, service, attempts, time);
+                    logger.error("Test FAIL for {} with {} - attempts limit REACHED with {} tries, time={}ms", api, service, attempts, time);
                     instance.addResult(new TestResult(service, false, "Rate limited, max attempts reached (5)"));
                     return;
                 }
@@ -181,7 +181,7 @@ public class Test {
             }
             // test failed for xyz reason
             // this is a regular cobalt fail
-            logger.warn("Test FAIL for {} with {} - HTTP {}, status=error, reason={}, time={}ms", api, service, responseCode, errorMessage, time);
+            logger.error("Test FAIL for {} with {} - HTTP {}, status=error, reason={}, time={}ms", api, service, responseCode, errorMessage, time);
             instance.addResult(new TestResult(service, false, errorMessage));
         }
     }
