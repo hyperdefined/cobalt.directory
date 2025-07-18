@@ -143,6 +143,11 @@ public class CobaltDirectory {
             }
         }
 
+        if (testsToRun.isEmpty()) {
+            logger.warn("No tests to run, exiting...");
+            System.exit(0);
+        }
+
         // perform the service tests
         Collections.shuffle(testsToRun);
         testBuilder.runServiceTests(testsToRun);

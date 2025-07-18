@@ -95,7 +95,7 @@ public class RequestUtil {
      * Request a JSON object from URL.
      *
      * @param url The URL to request.
-     * @return The JSONObject it returns. NULL if something went wrong.
+     * @return The RequestResults it returns. Returns NULL content if it failed.
      */
     public static RequestResults requestJSON(String url) {
         String rawJSON;
@@ -175,6 +175,8 @@ public class RequestUtil {
                         logger.warn("{} frontend is alive, but title does NOT match to cobalt. Please manually check this!", url);
                     }
                 }
+            } else {
+                return false;
             }
         } catch (Exception exception) {
             logger.error("Unable to read URL {}", url, exception);
@@ -237,6 +239,28 @@ public class RequestUtil {
         } catch (Exception exception) {
             logger.error("Unable to read URL {}", urlString, exception);
             return -1;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    public static boolean head(String urlString) {
+        HttpURLConnection connection = null;
+        try {
+            URI connectUrl = new URI(urlString);
+            connection = (HttpURLConnection) connectUrl.toURL().openConnection();
+            connection.setRequestProperty("User-Agent", CobaltDirectory.USER_AGENT);
+            connection.setRequestMethod("HEAD");
+            connection.setConnectTimeout(20000);
+            connection.setReadTimeout(20000);
+            connection.connect();
+
+            return connection.getResponseCode() == 200;
+        } catch (Exception exception) {
+            logger.error("Unable to HEAD URL {}", urlString, exception);
+            return false;
         } finally {
             if (connection != null) {
                 connection.disconnect();

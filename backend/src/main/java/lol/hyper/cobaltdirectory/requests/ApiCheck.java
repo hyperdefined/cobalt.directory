@@ -23,63 +23,42 @@ public class ApiCheck {
         String api = instance.getApi();
 
         logger.info("Checking API status for {}", api);
-        String responseContent;
-        JSONObject json;
-        String url = protocol + "://" + api;
-        // check the base of the domain first (for cobalt 10+)
-        RequestResults requestResults = RequestUtil.getStatusCode(url);
-        int responseCode = requestResults.responseCode();
-        if (responseCode == 200) {
-            // Load the API information
-            responseContent = RequestUtil.requestJSON(url).responseContent();
-            // if it fails to load any content (this should never happen with 200)
-            if (responseContent == null) {
-                logger.warn("Root content null for {}", api);
-                instance.setOffline();
-                return;
-            }
-            // if it fails to parse, try /api/serverInfo
-            try {
-                json = new JSONObject(responseContent);
-            } catch (JSONException exception) {
-                logger.warn("Failed to parse root for {}, trying /api/serverInfo", api);
-                responseContent = RequestUtil.requestJSON(url + "/api/serverInfo").responseContent();
-                if (responseContent == null) {
-                    logger.warn("Response null for {} on /api/serverInfo", api);
-                    instance.setOffline();
-                    return;
-                }
-                // make sure we can parse it
-                try {
-                    json = new JSONObject(responseContent);
-                } catch (JSONException exception2) {
-                    // we tried everything, mark it dead
-                    logger.error("Failed to parse JSON /api/serverInfo for {}", api, exception2);
-                    instance.setOffline();
-                    return;
-                }
-            }
-        } else {
-            // check the older serverInfo response (base returned not 200)
-            url = url + "/api/serverInfo";
-            responseContent = RequestUtil.requestJSON(url).responseContent();
-            // if it fails to load any content
-            if (responseContent == null) {
-                logger.warn("Response null for {} on /api/serverInfo after checking root", api);
-                instance.setOffline();
-                return;
-            }
-            // make sure we can parse it
-            try {
-                json = new JSONObject(responseContent);
-            } catch (JSONException exception2) {
-                logger.error("Failed to parse JSON /api/serverInfo for {}", api, exception2);
-                // we tried everything, mark it dead
-                instance.setOffline();
-                return;
-            }
+        String requestApi = protocol + "://" + api;
+        char lastChar = requestApi.charAt(requestApi.length() - 1);
+        // remove last / if it exists
+        if (lastChar == '/') {
+            requestApi = requestApi.substring(0, requestApi.length() - 1);
         }
 
+        // check root
+        if (!RequestUtil.head(requestApi + "/api/serverInfo")) {
+            if (!RequestUtil.head(requestApi)) {
+                logger.error("{} failed all HEAD requests, is DEAD!", api);
+                instance.setOffline();
+                return;
+            }
+        } else {
+            // /api/serverInfo worked, make sure we update the URL
+            requestApi += "/api/serverInfo";
+        }
+
+        RequestResults apiContent = RequestUtil.requestJSON(requestApi);
+        String responseContent = apiContent.responseContent();
+        if (responseContent == null) {
+            logger.error("responseContent returned null for {}", requestApi);
+            instance.setOffline();
+            return;
+        }
+        JSONObject json;
+        try {
+            json = new JSONObject(responseContent);
+        } catch (JSONException exception) {
+            logger.error("Failed to parse JSON for {}", requestApi, exception);
+            instance.setOffline();
+            return;
+        }
+
+        logger.info("Found API status under {}", requestApi);
         instance.setApiWorking(true);
         // on cobalt 10, the JSON response is different
         if (json.has("cobalt")) {

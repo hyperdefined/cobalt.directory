@@ -85,7 +85,7 @@ public class TestBuilder {
 
         // Wait until all tasks are finished
         try {
-            while (!latch.await(1, TimeUnit.MINUTES)) {
+            while (!latch.await(5, TimeUnit.MINUTES)) {
                 logger.info("Remaining tests: {}", latch.getCount());
                 if (!testsQueue.isEmpty()) {
                     logger.info("Tests still in queue: {}", testsQueue);
