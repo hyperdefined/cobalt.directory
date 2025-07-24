@@ -246,28 +246,6 @@ public class RequestUtil {
         }
     }
 
-    public static boolean head(String urlString) {
-        HttpURLConnection connection = null;
-        try {
-            URI connectUrl = new URI(urlString);
-            connection = (HttpURLConnection) connectUrl.toURL().openConnection();
-            connection.setRequestProperty("User-Agent", CobaltDirectory.USER_AGENT);
-            connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
-            connection.connect();
-
-            return connection.getResponseCode() == 200;
-        } catch (Exception exception) {
-            logger.error("Unable to HEAD URL {}", urlString, exception);
-            return false;
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-    }
-
     /**
      * Make a HEAD request to a given URL.
      *
