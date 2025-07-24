@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 public class CobaltDirectory {
 
-    public static Logger logger;
-    public static String USER_AGENT;
-    public static JSONObject config;
-    public static final ReusableMessageFactory MESSAGE_FACTORY = new ReusableMessageFactory();
+    private static Logger logger;
+    private static String USER_AGENT;
+    private static JSONObject config;
+    private static final ReusableMessageFactory MESSAGE_FACTORY = new ReusableMessageFactory();
 
     static class TestCounter {
         int success;
@@ -239,5 +239,17 @@ public class CobaltDirectory {
                 }
             }
         }
+    }
+
+    public static String getUserAgent() {
+        return USER_AGENT;
+    }
+
+    public static JSONObject getConfig() {
+        return config;
+    }
+
+    public static ReusableMessageFactory getMessageFactory() {
+        return MESSAGE_FACTORY;
     }
 }

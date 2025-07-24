@@ -14,7 +14,7 @@ public class Services {
 
     private final JSONObject tests;
     private final Map<String, String> testsUrls = new HashMap<>();
-    private final Logger logger = LogManager.getLogger(Services.class, CobaltDirectory.MESSAGE_FACTORY);
+    private final Logger logger = LogManager.getLogger(Services.class, CobaltDirectory.getMessageFactory());
 
     public Services(JSONObject tests) {
         this.tests = tests;

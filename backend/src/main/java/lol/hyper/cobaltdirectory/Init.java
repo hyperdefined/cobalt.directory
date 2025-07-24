@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Init {
 
-    public final Logger logger = LogManager.getLogger(this);
+    private final Logger logger = LogManager.getLogger(this);
     private String userAgent;
     private JSONObject config;
     private JSONObject tests;

@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class ApiCheck {
 
     private final Instance instance;
-    private final Logger logger = LogManager.getLogger(ApiCheck.class, CobaltDirectory.MESSAGE_FACTORY);
+    private final Logger logger = LogManager.getLogger(ApiCheck.class, CobaltDirectory.getMessageFactory());
 
     public ApiCheck(Instance instance) {
         this.instance = instance;

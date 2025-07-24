@@ -20,7 +20,7 @@ public class Test {
     private final String service;
     private final String testUrl;
     private final String authorization;
-    private final Logger logger = LogManager.getLogger(Test.class, CobaltDirectory.MESSAGE_FACTORY);
+    private final Logger logger = LogManager.getLogger(Test.class, CobaltDirectory.getMessageFactory());
     private int attempts = 0;
 
     public Test(Instance instance, String service, String testUrl, String authorization) {

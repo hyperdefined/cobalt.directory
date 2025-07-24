@@ -34,7 +34,7 @@ public class RequestUtil {
                 .timeout(Duration.ofSeconds(20))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .header("User-Agent", CobaltDirectory.USER_AGENT)
+                .header("User-Agent", CobaltDirectory.getUserAgent())
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
 
         // use our API key if we have one
@@ -71,7 +71,7 @@ public class RequestUtil {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Accept", "application/json")
-                    .header("User-Agent", CobaltDirectory.USER_AGENT)
+                    .header("User-Agent", CobaltDirectory.getUserAgent())
                     .GET()
                     .build();
 
@@ -96,7 +96,7 @@ public class RequestUtil {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Accept", "application/json")
-                    .header("User-Agent", CobaltDirectory.USER_AGENT)
+                    .header("User-Agent", CobaltDirectory.getUserAgent())
                     .GET()
                     .build();
 
@@ -133,7 +133,7 @@ public class RequestUtil {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Accept", "application/json")
-                    .header("User-Agent", CobaltDirectory.USER_AGENT)
+                    .header("User-Agent", CobaltDirectory.getUserAgent())
                     .HEAD()
                     .build();
 
@@ -156,7 +156,7 @@ public class RequestUtil {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Accept", "application/json")
-                    .header("User-Agent", CobaltDirectory.USER_AGENT)
+                    .header("User-Agent", CobaltDirectory.getUserAgent())
                     .HEAD()
                     .build();
 

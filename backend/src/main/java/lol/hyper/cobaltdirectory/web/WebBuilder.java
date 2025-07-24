@@ -23,7 +23,7 @@ public class WebBuilder {
      * @param formattedDate The date to display.
      */
     public static void buildIndex(List<Instance> instances, String formattedDate) {
-        String mainListTemplate = FileUtil.readFile(new File(CobaltDirectory.config.getString("web_path"), "template-mainlist.md"));
+        String mainListTemplate = FileUtil.readFile(new File(CobaltDirectory.getConfig().getString("web_path"), "template-mainlist.md"));
         if (mainListTemplate == null) {
             logger.error("Unable to read template-mainlist.md! Exiting...");
             System.exit(1);
@@ -38,7 +38,7 @@ public class WebBuilder {
         // update the time it was run
         mainListTemplate = mainListTemplate.replaceAll("<time>", formattedDate);
         // write to index.md
-        FileUtil.writeFile(mainListTemplate, new File(CobaltDirectory.config.getString("web_path"), "index.md"));
+        FileUtil.writeFile(mainListTemplate, new File(CobaltDirectory.getConfig().getString("web_path"), "index.md"));
     }
 
     /**
@@ -48,7 +48,7 @@ public class WebBuilder {
      * @param formattedDate The date to display.
      */
     public static void buildInstancePage(Instance instance, String formattedDate) {
-        String instanceTemplate = FileUtil.readFile(new File(CobaltDirectory.config.getString("web_path"), "template-instance.md"));
+        String instanceTemplate = FileUtil.readFile(new File(CobaltDirectory.getConfig().getString("web_path"), "template-instance.md"));
         if (instanceTemplate == null) {
             logger.error("Unable to read template-instance.md! Exiting...");
             System.exit(1);
@@ -84,7 +84,7 @@ public class WebBuilder {
         String scoreTable = StringUtil.buildScoreTable(instance);
         // replace the placeholder with the score table
         instanceTemplate = instanceTemplate.replaceAll("<scores>", scoreTable);
-        File scoreFile = new File(CobaltDirectory.config.getString("score_path"), instance.getHash() + ".md");
+        File scoreFile = new File(CobaltDirectory.getConfig().getString("score_path"), instance.getHash() + ".md");
         FileUtil.writeFile(instanceTemplate, scoreFile);
     }
 
@@ -100,7 +100,7 @@ public class WebBuilder {
         // sort into alphabetical order
         Collections.sort(instances);
 
-        String serviceTemplate = FileUtil.readFile(new File(CobaltDirectory.config.getString("web_path"), "template-service.md"));
+        String serviceTemplate = FileUtil.readFile(new File(CobaltDirectory.getConfig().getString("web_path"), "template-service.md"));
         if (serviceTemplate == null) {
             logger.error("Unable to read template-service.md! Exiting...");
             System.exit(1);
@@ -118,6 +118,6 @@ public class WebBuilder {
         serviceTemplate = serviceTemplate.replaceAll("<service-official-table>", officialTable);
         serviceTemplate = serviceTemplate.replaceAll("<service-community-table>", communityTable);
 
-        FileUtil.writeFile(serviceTemplate, new File(CobaltDirectory.config.getString("service_path"), slug + ".md"));
+        FileUtil.writeFile(serviceTemplate, new File(CobaltDirectory.getConfig().getString("service_path"), slug + ".md"));
     }
 }
