@@ -53,10 +53,15 @@ public class StringUtil {
                 table.append("<tr class=\"").append(instance.getRating()).append("\">");
                 services = instance.getServiceCount(true) + "/" + instance.getTestResults().size();
             } else {
-                if (instance.getFrontEnd() == null) {
-                    instanceDisplay = instance.getApi();
+                if (instance.getApi().contains("imput.net")) {
+                    String imputServer = officialInstanceName(instance.getApi());
+                    instanceDisplay = instance.getFrontEnd() + " (" + imputServer + ")";
                 } else {
-                    instanceDisplay = instance.getFrontEnd();
+                    if (instance.getFrontEnd() == null) {
+                        instanceDisplay = instance.getApi();
+                    } else {
+                        instanceDisplay = instance.getFrontEnd();
+                    }
                 }
                 table.append("<tr class=\"offline\">");
                 services = "0/0";
@@ -156,10 +161,15 @@ public class StringUtil {
                 }
                 table.append("<tr class=\"").append(instance.getRating()).append("\">");
             } else {
-                if (instance.getFrontEnd() == null) {
-                    instanceDisplay = instance.getApi();
+                if (instance.getApi().contains("imput.net")) {
+                    String imputServer = officialInstanceName(instance.getApi());
+                    instanceDisplay = instance.getFrontEnd() + " (" + imputServer + ")";
                 } else {
-                    instanceDisplay = instance.getFrontEnd();
+                    if (instance.getFrontEnd() == null) {
+                        instanceDisplay = instance.getApi();
+                    } else {
+                        instanceDisplay = instance.getFrontEnd();
+                    }
                 }
                 table.append("<tr class=\"offline\">");
             }
