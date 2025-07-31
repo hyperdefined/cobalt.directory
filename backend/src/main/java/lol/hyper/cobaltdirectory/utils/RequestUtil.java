@@ -2,6 +2,7 @@ package lol.hyper.cobaltdirectory.utils;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
 import lol.hyper.cobaltdirectory.requests.RequestResults;
+import lol.hyper.cobaltdirectory.tests.ContentLengthHeader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -223,9 +224,9 @@ public class RequestUtil {
      * 0 means it failed.
      *
      * @param urlString The tunnel URL in cobalt's response.
-     * @return The length.
+     * @return A Headers record with the header name and its value, or null if not present.
      */
-    public static long checkTunnelLength(String urlString) {
+    public static ContentLengthHeader checkTunnelLength(String urlString) {
         HttpURLConnection connection = null;
         try {
             URI connectUrl = new URI(urlString);
@@ -238,7 +239,7 @@ public class RequestUtil {
             return extractLength(connection);
         } catch (Exception exception) {
             logger.error("Unable to read URL {}", urlString, exception);
-            return -1;
+            return null;
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -328,12 +329,28 @@ public class RequestUtil {
      * Check headers for content-length or estimated-content-length.
      *
      * @param connection The HttpURLConnection.
-     * @return The content-length size, or -1 if it's not there.
+     * @return A Headers record with the header name and its value, or null if not present.
      */
-    private static long extractLength(HttpURLConnection connection) {
-        return firstNonNegative(connection.getHeaderField("content-length"))
-                .orElseGet(() -> firstNonNegative(connection.getHeaderField("estimated-content-length"))
-                        .orElse(-1L));
+    private static ContentLengthHeader extractLength(HttpURLConnection connection) {
+        String contentLength = connection.getHeaderField("content-length");
+        if (contentLength != null) {
+            long size = Long.parseLong(contentLength);
+            // make sure the size is positive
+            if (size >= 0) {
+                return new ContentLengthHeader("content-length", size);
+            }
+        }
+
+        String estimatedLength = connection.getHeaderField("estimated-content-length");
+        if (estimatedLength != null) {
+            long size = Long.parseLong(estimatedLength);
+            // make sure the size is positive
+            if (size >= 0) {
+                return new ContentLengthHeader("estimated-content-length", size);
+            }
+        }
+
+        return null;
     }
 
     private static OptionalLong firstNonNegative(String value) {

@@ -206,6 +206,37 @@ public class StringUtil {
         if (input == null) {
             return "";
         }
+
+        // java.net.SocketTimeoutException
+        if (input.contains("SocketTimeout")) {
+            return "Timed out (took over 20 seconds)";
+        }
+        // org.json.JSONException
+        if (input.contains("JSONException")) {
+            return "Failed to parse API response (invalid JSON)";
+        }
+        // it seems like this service is not supported yet or your link is invalid. have you pasted the right link?
+        if (input.contains("link is invalid")) {
+            return "Instance does not support this service";
+        }
+        // i don't see anything i could download by your link. try a different one!
+        // i couldn't find anything about this link. check if it works and try again! some content may be region restricted, so keep that in mind.
+        if (input.contains("i don't see anything") || input.contains("i couldn't find anything")) {
+            return "No media found";
+        }
+        // something went wrong when i tried getting info about your link. are you sure it works? check if it does, and try again.
+        if (input.contains("something went wrong")) {
+            return "Instance failed to get media";
+        }
+        // couldn't get this youtube video because it requires an account to view. this limitation is done by google to seemingly stop scraping,
+        // affecting all 3rd party tools and even their own clients. try again, but if issue persists, check the status page or create an issue on github.
+        if (input.contains("an account to view")) {
+            return "YouTube asked instance to login with an account";
+        }
+        // i couldn't get the temporary token that's required to download songs from soundcloud. try again, but if issue persists, check the status page or create an issue on github.
+        if (input.contains("temporary token")) {
+            return "Failed to get temporary token for Soundcloud";
+        }
         return Jsoup.parse(input).text();
     }
 

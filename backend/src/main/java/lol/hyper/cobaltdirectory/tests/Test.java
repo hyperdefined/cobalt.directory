@@ -115,31 +115,40 @@ public class Test {
                     // make sure the tunnel link returns the correct domain
                     // some APIs never do this
                     String tunnelUrl = StringUtil.rewrite(jsonResponse.getString("url"), instance.getApi(), protocol);
-                    long size = RequestUtil.checkTunnelLength(tunnelUrl);
+                    ContentLengthHeader checkTunnelLength = RequestUtil.checkTunnelLength(tunnelUrl);
+                    // there were no content-length/estimated-content-length header
+                    if (checkTunnelLength == null) {
+                        logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
+                        instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
+                        return;
+                    }
+                    // get the header in the response
+                    long size = checkTunnelLength.size();
+                    String header = checkTunnelLength.header();
                     // headers returned valid length
-                    if (size > 0) {
-                        logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
-                        instance.addResult(new TestResult(service, true, "Working, returned valid status, and has valid content-length header"));
+                    if (size > 1000) {
+                        logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", api, service, status, time, size, header);
+                        instance.addResult(new TestResult(service, true, "Working, returned valid status, and has valid " + header + " header"));
                         return;
                     }
                     // headers reported 0 content length, which means it failed
                     if (size == 0) {
-                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}", api, service, status, time, size);
-                        instance.addResult(new TestResult(service, false, "Not working, content-length header is 0"));
+                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", api, service, status, time, size, header);
+                        instance.addResult(new TestResult(service, false, "Not working as " + header + " is 0"));
                         return;
                     }
-                    // there were no headers in the response
-                    if (size == -1) {
-                        logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
-                        instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
+                    // header length is too small for content
+                    if (size < 1000) {
+                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={} - too small", api, service, status, time, size, header);
+                        instance.addResult(new TestResult(service, false, "Not working as " + header + " is too small (" + size + ")"));
                     }
                 } else {
                     logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
-                    instance.addResult(new TestResult(service, true, "Working, returned valid status"));
+                    instance.addResult(new TestResult(service, true, "Working, returned valid status (" + status + ")"));
                 }
             } else {
                 logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
-                instance.addResult(new TestResult(service, false, "Status returned " + status));
+                instance.addResult(new TestResult(service, false, "Invalid cobalt status (" + status + ")"));
             }
         } else {
             // if we didn't get back a 200 response, it failed

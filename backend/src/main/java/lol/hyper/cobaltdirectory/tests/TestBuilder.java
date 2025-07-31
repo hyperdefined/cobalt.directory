@@ -28,8 +28,8 @@ public class TestBuilder {
                 executorService.submit(() -> {
                     try {
                         apiCheck.run();
-                    } catch (Exception e) {
-                        logger.error("API check failed due to an exception: {}", apiCheck, e);
+                    } catch (Exception exception) {
+                        logger.error("API check failed due to an exception: {}", apiCheck, exception);
                     } finally {
                         latch.countDown();
                     }
@@ -38,9 +38,8 @@ public class TestBuilder {
         }
         executorService.shutdown();
 
-        // Wait until all tasks are finished
         try {
-            while (!latch.await(1, TimeUnit.MINUTES)) {
+            while (!latch.await(20, TimeUnit.SECONDS)) {
                 logger.info("Remaining API checks: {}", latch.getCount());
                 if (!apiQueue.isEmpty()) {
                     logger.info("APIs still in queue: {}", apiQueue);
@@ -50,6 +49,7 @@ public class TestBuilder {
             logger.error("Execution was interrupted", exception);
         }
 
+        // check if tests completed
         if (latch.getCount() == 0) {
             logger.info("All API checks have completed!!!!");
         } else {
@@ -73,8 +73,8 @@ public class TestBuilder {
                 executorService.submit(() -> {
                     try {
                         test.run();
-                    } catch (Exception e) {
-                        logger.error("Test failed due to an exception: {}", test, e);
+                    } catch (Exception exception) {
+                        logger.error("Test failed due to an exception: {}", test, exception);
                     } finally {
                         latch.countDown();
                     }
@@ -83,9 +83,8 @@ public class TestBuilder {
         }
         executorService.shutdown();
 
-        // Wait until all tasks are finished
         try {
-            while (!latch.await(5, TimeUnit.MINUTES)) {
+            while (!latch.await(20, TimeUnit.SECONDS)) {
                 logger.info("Remaining tests: {}", latch.getCount());
                 if (!testsQueue.isEmpty()) {
                     logger.info("Tests still in queue: {}", testsQueue);
@@ -95,6 +94,7 @@ public class TestBuilder {
             logger.error("Execution was interrupted", exception);
         }
 
+        // check if tests completed
         if (latch.getCount() == 0) {
             logger.info("All tests have completed!!!!");
         } else {
