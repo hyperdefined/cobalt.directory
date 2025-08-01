@@ -86,6 +86,7 @@ public class RequestUtil {
             content = stringBuilder.toString();
 
         } catch (Exception exception) {
+            logger.error("Unable to send post", exception);
             return new RequestResults(null, responseCode, headers, exception);
         } finally {
             if (connection != null) {
