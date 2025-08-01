@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -118,8 +119,14 @@ public class Test {
                     ContentLengthHeader checkTunnelLength = RequestUtil.checkTunnelLength(tunnelUrl);
                     // there were no content-length/estimated-content-length header
                     if (checkTunnelLength == null) {
-                        logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
-                        instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
+                        // for YouTube, anything without the proper headers is failure
+                        if (service.toLowerCase(Locale.ROOT).contains("youtube")) {
+                            logger.warn("Test FAILED for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
+                            instance.addResult(new TestResult(service, true, "Not working, didn't respond with proper content-length header"));
+                        } else {
+                            logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
+                            instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
+                        }
                         return;
                     }
                     // get the header in the response
