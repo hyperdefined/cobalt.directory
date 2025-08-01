@@ -121,7 +121,7 @@ public class Test {
                     if (checkTunnelLength == null) {
                         // for YouTube, anything without the proper headers is failure
                         if (service.toLowerCase(Locale.ROOT).contains("youtube")) {
-                            logger.warn("Test FAILED for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
+                            logger.error("Test FAILED for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
                             instance.addResult(new TestResult(service, true, "Not working, didn't respond with proper content-length header"));
                         } else {
                             logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
