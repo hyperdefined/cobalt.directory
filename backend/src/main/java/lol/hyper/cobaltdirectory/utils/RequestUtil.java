@@ -12,7 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -333,33 +336,42 @@ public class RequestUtil {
      */
     private static ContentLengthHeader extractLength(HttpURLConnection connection) {
         String contentLength = connection.getHeaderField("content-length");
+        String estimatedLength = connection.getHeaderField("estimated-content-length");
+
+        long contentSize = -1;
+        long estimatedSize = -1;
+
         if (contentLength != null) {
-            long size = Long.parseLong(contentLength);
-            // make sure the size is positive
-            if (size >= 0) {
-                return new ContentLengthHeader("content-length", size);
+            try {
+                contentSize = Long.parseLong(contentLength);
+            } catch (NumberFormatException exception) {
+                logger.error("Unable to parse content-length {}", estimatedLength, exception);
+                return null;
             }
         }
 
-        String estimatedLength = connection.getHeaderField("estimated-content-length");
         if (estimatedLength != null) {
-            long size = Long.parseLong(estimatedLength);
-            // make sure the size is positive
-            if (size >= 0) {
-                return new ContentLengthHeader("estimated-content-length", size);
+            try {
+                estimatedSize = Long.parseLong(estimatedLength);
+            } catch (NumberFormatException exception) {
+                logger.error("Unable to parse estimated-content-length {}", estimatedLength, exception);
+                return null;
             }
+        }
+
+        boolean contentValid = contentSize >= 0;
+        boolean estimatedValid = estimatedSize >= 0;
+
+        if (contentValid && estimatedValid) {
+            return (contentSize >= estimatedSize)
+                    ? new ContentLengthHeader("content-length", contentSize)
+                    : new ContentLengthHeader("estimated-content-length", estimatedSize);
+        } else if (contentValid) {
+            return new ContentLengthHeader("content-length", contentSize);
+        } else if (estimatedValid) {
+            return new ContentLengthHeader("estimated-content-length", estimatedSize);
         }
 
         return null;
-    }
-
-    private static OptionalLong firstNonNegative(String value) {
-        if (value == null) return OptionalLong.empty();
-        try {
-            long n = Long.parseLong(value.trim());
-            return n >= 0 ? OptionalLong.of(n) : OptionalLong.empty();
-        } catch (NumberFormatException e) {
-            return OptionalLong.empty();
-        }
     }
 }
