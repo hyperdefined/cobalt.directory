@@ -55,3 +55,4 @@ backend/removed_instances
 backend/instances_private
 CobaltDirectory-*.jar
 backend/apikeys.json
+backend/api.json
