@@ -2,16 +2,17 @@ package lol.hyper.cobaltdirectory;
 
 import lol.hyper.cobaltdirectory.instance.Instance;
 import lol.hyper.cobaltdirectory.requests.ApiCheck;
-import lol.hyper.cobaltdirectory.tests.Test;
-import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.services.Services;
+import lol.hyper.cobaltdirectory.tests.Test;
 import lol.hyper.cobaltdirectory.tests.TestBuilder;
+import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.utils.FileUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
 import lol.hyper.cobaltdirectory.web.WebBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -165,8 +166,10 @@ public class CobaltDirectory {
 
         JSONObject instancesResults = new JSONObject();
         File instancesResultsFile = new File("results.json");
-
         Map<String, TestCounter> testResults = new HashMap<>();
+        // idk what to call this
+        Map<String, List<String>> servicesWithWorkingInstances = new HashMap<>();
+
         for (Instance instance : instances) {
             if (!instance.isApiWorking()) {
                 instance.setScore(-1.0);
@@ -176,7 +179,12 @@ public class CobaltDirectory {
             for (TestResult r : instance.getTestResults()) {
                 TestCounter c = testResults.computeIfAbsent(r.service(), s -> new TestCounter());
                 c.total++;
-                if (r.status()) c.success++;
+                if (r.status()) {
+                    // make the list if the service doesn't have it
+                    List<String> instancesFromServices = servicesWithWorkingInstances.computeIfAbsent(r.service(), k -> new ArrayList<>());
+                    instancesFromServices.add(instance.getApi());
+                    c.success++;
+                }
             }
 
             instancesResults.put(instance.getApi(), instance.toJSON());
@@ -186,6 +194,21 @@ public class CobaltDirectory {
                 WebBuilder.buildInstancePage(instance, formattedDate);
             }
         }
+
+        // store which service support what instance
+        JSONObject serviceApi = new JSONObject();
+        for (Map.Entry<String, List<String>> entry : servicesWithWorkingInstances.entrySet()) {
+            String service = entry.getKey();
+            List<String> workingInstances = entry.getValue();
+            JSONArray workingInstancesArray = new JSONArray();
+            for (String instance : workingInstances) {
+                workingInstancesArray.put(instance);
+            }
+            serviceApi.put(Services.makeSlug(service), workingInstancesArray);
+        }
+
+        File serviceApiFile = new File("api.json");
+        FileUtil.writeFile(serviceApi.toString(), serviceApiFile);
 
         // sort the instances by score
         instances.sort(Comparator.comparingDouble(Instance::getScore).reversed());
