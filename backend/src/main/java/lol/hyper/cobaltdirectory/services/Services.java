@@ -6,35 +6,35 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class Services {
 
     private final JSONObject tests;
     private final Map<String, String> testsUrls = new HashMap<>();
     private final Logger logger = LogManager.getLogger(Services.class, CobaltDirectory.getMessageFactory());
+    private final List<String> services = new ArrayList<>();
 
     public Services(JSONObject tests) {
         this.tests = tests;
     }
 
     public void importTests() {
-        for (String key : tests.keySet()) {
-            logger.info("Importing test: {}", key);
-            if (key.equalsIgnoreCase("xiaohongshu")) {
+        for (String service : tests.keySet()) {
+            logger.info("Importing test: {}", service);
+            if (service.equalsIgnoreCase("xiaohongshu")) {
                 logger.info("Generating Xiaohongshu test video...");
                 String xiaohongshuUrl = XiaohongshuTest.getTestUrl();
                 if (xiaohongshuUrl == null) {
                     logger.warn("Unable to dynamically get Xiaohongshu link!");
                 } else {
                     logger.info("Found valid Xiaohongshu link: {}", xiaohongshuUrl);
-                    testsUrls.put(key, xiaohongshuUrl);
+                    testsUrls.put(service, xiaohongshuUrl);
                     continue;
                 }
             }
-            testsUrls.put(key, tests.getString(key));
+            services.add(makeSlug(service));
+            testsUrls.put(service, tests.getString(service));
         }
     }
 
@@ -45,5 +45,9 @@ public class Services {
 
     public Map<String, String> getTests() {
         return testsUrls;
+    }
+
+    public List<String> getServices() {
+        return services;
     }
 }

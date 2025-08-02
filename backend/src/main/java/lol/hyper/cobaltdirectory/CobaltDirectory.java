@@ -169,6 +169,9 @@ public class CobaltDirectory {
         Map<String, TestCounter> testResults = new HashMap<>();
         // idk what to call this
         Map<String, List<String>> servicesWithWorkingInstances = new HashMap<>();
+        for (String service : services.getServices()) {
+            servicesWithWorkingInstances.put(service, new ArrayList<>());
+        }
 
         for (Instance instance : instances) {
             if (!instance.isApiWorking()) {
@@ -179,10 +182,12 @@ public class CobaltDirectory {
             for (TestResult r : instance.getTestResults()) {
                 TestCounter c = testResults.computeIfAbsent(r.service(), s -> new TestCounter());
                 c.total++;
+
+                String service = Services.makeSlug(r.service());
                 if (r.status()) {
-                    // make the list if the service doesn't have it
-                    List<String> instancesFromServices = servicesWithWorkingInstances.computeIfAbsent(r.service(), k -> new ArrayList<>());
-                    instancesFromServices.add(instance.getApi());
+                    if (!r.service().equals("Frontend")) {
+                        servicesWithWorkingInstances.computeIfAbsent(service, k -> new ArrayList<>()).add(instance.getApi());
+                    }
                     c.success++;
                 }
             }
@@ -200,11 +205,17 @@ public class CobaltDirectory {
         for (Map.Entry<String, List<String>> entry : servicesWithWorkingInstances.entrySet()) {
             String service = entry.getKey();
             List<String> workingInstances = entry.getValue();
+
             JSONArray workingInstancesArray = new JSONArray();
             for (String instance : workingInstances) {
                 workingInstancesArray.put(instance);
             }
-            serviceApi.put(Services.makeSlug(service), workingInstancesArray);
+
+            if (workingInstances.isEmpty()) {
+                logger.warn("No working instances for {}", service);
+            }
+
+            serviceApi.put(service, workingInstancesArray);
         }
 
         File serviceApiFile = new File("api.json");
