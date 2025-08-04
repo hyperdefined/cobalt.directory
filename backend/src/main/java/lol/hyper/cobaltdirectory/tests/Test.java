@@ -7,10 +7,13 @@ import lol.hyper.cobaltdirectory.utils.RequestUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +26,7 @@ public class Test {
     private final String authorization;
     private final Logger logger = LogManager.getLogger(Test.class, CobaltDirectory.getMessageFactory());
     private int attempts = 0;
+    private final List<String> validStatus = Arrays.asList("redirect", "stream", "tunnel", "success", "picker");
 
     public Test(Instance instance, String service, String testUrl, String authorization) {
         this.instance = instance;
@@ -107,8 +111,8 @@ public class Test {
                 return;
             }
 
-            // if the API's status was redirect/stream/tunnel/success/picker, it was successful at the request
-            if (status.equalsIgnoreCase("redirect") || status.equalsIgnoreCase("stream") || status.equalsIgnoreCase("success") || status.equalsIgnoreCase("picker") || status.equalsIgnoreCase("tunnel")) {
+            // check if the status is valid in the response JSON
+            if (validStatus.contains(status.toLowerCase(Locale.ROOT))) {
                 // if the response was tunnel or stream, check the headers
                 // cobalt has content-length and estimated-content-length headers
                 // they report how big the media is
@@ -148,11 +152,17 @@ public class Test {
                     if (size < 1000) {
                         logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={} - too small", api, service, status, time, size, header);
                         instance.addResult(new TestResult(service, false, "Not working as " + header + " is too small (" + size + ")"));
+                        return;
                     }
-                } else {
-                    logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
-                    instance.addResult(new TestResult(service, true, "Working, returned valid status (" + status + ")"));
                 }
+                if (status.equalsIgnoreCase("picker")) {
+                    JSONArray photos = jsonResponse.getJSONArray("picker");
+                    logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, photos={}", api, service, status, time, photos.length());
+                    instance.addResult(new TestResult(service, true, "Working, returned valid status (" + status + " with " + photos.length() + " photos)"));
+                    return;
+                }
+                logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
+                instance.addResult(new TestResult(service, true, "Working, returned valid status (" + status + ")"));
             } else {
                 logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms", api, service, status, time);
                 instance.addResult(new TestResult(service, false, "Invalid cobalt status (" + status + ")"));
