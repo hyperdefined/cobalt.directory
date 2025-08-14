@@ -26,7 +26,7 @@ public class Test {
     private final String authorization;
     private final Logger logger = LogManager.getLogger(Test.class, CobaltDirectory.getMessageFactory());
     private int attempts = 0;
-    private final List<String> validStatus = Arrays.asList("redirect", "stream", "tunnel", "success", "picker");
+    private final List<String> validStatus = Arrays.asList("redirect", "stream", "tunnel", "success", "picker", "local-processing");
 
     public Test(Instance instance, String service, String testUrl, String authorization) {
         this.instance = instance;
@@ -120,40 +120,23 @@ public class Test {
                     // make sure the tunnel link returns the correct domain
                     // some APIs never do this
                     String tunnelUrl = StringUtil.rewrite(jsonResponse.getString("url"), instance.getApi(), protocol);
-                    ContentLengthHeader checkTunnelLength = RequestUtil.checkTunnelLength(tunnelUrl);
-                    // there were no content-length/estimated-content-length header
-                    if (checkTunnelLength == null) {
-                        // for YouTube, anything without the proper headers is failure
-                        if (service.toLowerCase(Locale.ROOT).contains("youtube")) {
-                            logger.error("Test FAILED for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
-                            instance.addResult(new TestResult(service, false, "Not working, didn't respond with proper content-length header"));
-                        } else {
-                            logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, service, status, time);
-                            instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
-                        }
+                    checkHeaders(tunnelUrl, status, time);
+                    return;
+                }
+                if (status.equalsIgnoreCase("local-processing")) {
+                    // make sure we have tunnel links
+                    // not sure if this is ever possible to fail
+                    if (!jsonResponse.has("tunnel")) {
+                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms - local-processing but no tunnel links", api, service, status, time);
+                        instance.addResult(new TestResult(service, false, "Forced local-processing, but no tunnel links returned"));
                         return;
                     }
-                    // get the header in the response
-                    long size = checkTunnelLength.size();
-                    String header = checkTunnelLength.header();
-                    // headers returned valid length
-                    if (size > 1000) {
-                        logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", api, service, status, time, size, header);
-                        instance.addResult(new TestResult(service, true, "Working, returned valid status, and has valid " + header + " header"));
-                        return;
-                    }
-                    // headers reported 0 content length, which means it failed
-                    if (size == 0) {
-                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", api, service, status, time, size, header);
-                        instance.addResult(new TestResult(service, false, "Not working as " + header + " is 0"));
-                        return;
-                    }
-                    // header length is too small for content
-                    if (size < 1000) {
-                        logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={} - too small", api, service, status, time, size, header);
-                        instance.addResult(new TestResult(service, false, "Not working as " + header + " is too small (" + size + ")"));
-                        return;
-                    }
+                    // check the headers for the tunnel urls
+                    // it returns multiple, so just check the first one
+                    JSONArray tunnelUrls = jsonResponse.getJSONArray("tunnel");
+                    String tunnelUrl = StringUtil.rewrite(tunnelUrls.getString(0), instance.getApi(), protocol);
+                    checkHeaders(tunnelUrl, status, time);
+                    return;
                 }
                 if (status.equalsIgnoreCase("picker")) {
                     JSONArray photos = jsonResponse.getJSONArray("picker");
@@ -209,6 +192,50 @@ public class Test {
             // this is a regular cobalt fail
             logger.error("Test FAIL for {} with {} - HTTP {}, status=error, reason={}, time={}ms", api, service, responseCode, errorMessage, time);
             instance.addResult(new TestResult(service, false, errorMessage));
+        }
+    }
+
+    /**
+     * Check the headers from the tunnel url.
+     *
+     * @param tunnelUrl The tunnel url to check,
+     * @param status    The status in the response.
+     * @param time      The time it took for the request.
+     */
+    private void checkHeaders(String tunnelUrl, String status, long time) {
+        ContentLengthHeader checkTunnelLength = RequestUtil.checkTunnelLength(tunnelUrl);
+        // there were no content-length/estimated-content-length header
+        if (checkTunnelLength == null) {
+            // for YouTube, anything without the proper headers is failure, most of the time...?
+            if (service.toLowerCase(Locale.ROOT).contains("youtube")) {
+                logger.error("Test FAILED for {} with {} - HTTP 200, status={}, time={}ms - youtube missing content-length header", instance.getApi(), service, status, time);
+                instance.addResult(new TestResult(service, false, "Not working, didn't respond with proper content-length header"));
+            } else {
+                logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", instance.getApi(), service, status, time);
+                instance.addResult(new TestResult(service, true, "Working, returned valid status, but no content-length header to verify"));
+            }
+            return;
+        }
+
+        // get the header in the response
+        long size = checkTunnelLength.size();
+        String header = checkTunnelLength.header();
+        // headers returned valid length
+        if (size > 1000) {
+            logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", instance.getApi(), service, status, time, size, header);
+            instance.addResult(new TestResult(service, true, "Working, returned valid status, and has valid " + header + " header"));
+            return;
+        }
+        // headers reported 0 content length, which means it failed
+        if (size == 0) {
+            logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", instance.getApi(), service, status, time, size, header);
+            instance.addResult(new TestResult(service, false, "Not working as " + header + " is 0"));
+            return;
+        }
+        // header length is too small for content
+        if (size < 1000) {
+            logger.error("Test FAIL for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={} - too small", instance.getApi(), service, status, time, size, header);
+            instance.addResult(new TestResult(service, false, "Not working as " + header + " is too small (" + size + ")"));
         }
     }
 
