@@ -59,6 +59,7 @@ echo "Installing Gems..."
 bundle install --quiet
 echo "Building Jekyll site..."
 cp "$BACKEND_DIR/api.json" .
+cp "$BACKEND_DIR/api_frontends.json" .
 bundle exec jekyll build
 
 # ------------------------- Copy Output -------------------------
