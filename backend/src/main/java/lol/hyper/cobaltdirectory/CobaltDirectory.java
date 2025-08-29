@@ -170,7 +170,7 @@ public class CobaltDirectory {
         File instancesResultsFile = new File("results.json");
         Map<String, TestCounter> testResults = new HashMap<>();
         // idk what to call this
-        Map<String, List<String>> servicesWithWorkingInstances = new HashMap<>();
+        Map<String, List<Instance>> servicesWithWorkingInstances = new HashMap<>();
         for (String service : services.getServices()) {
             servicesWithWorkingInstances.put(service, new ArrayList<>());
         }
@@ -188,7 +188,7 @@ public class CobaltDirectory {
                 String service = Services.makeSlug(r.service());
                 if (r.status()) {
                     if (!r.service().equals("Frontend")) {
-                        servicesWithWorkingInstances.computeIfAbsent(service, k -> new ArrayList<>()).add(instance.getApi());
+                        servicesWithWorkingInstances.computeIfAbsent(service, k -> new ArrayList<>()).add(instance);
                     }
                     c.success++;
                 }
@@ -204,25 +204,33 @@ public class CobaltDirectory {
 
         // store which service support what instance
         JSONObject serviceApi = new JSONObject();
-        for (Map.Entry<String, List<String>> entry : servicesWithWorkingInstances.entrySet()) {
+        JSONObject serviceFrontendsApi = new JSONObject();
+        for (Map.Entry<String, List<Instance>> entry : servicesWithWorkingInstances.entrySet()) {
             String service = entry.getKey();
             String friendlyService = Services.getIdToFriendly().get(service);
-            List<String> workingInstances = entry.getValue();
+            List<Instance> workingInstances = entry.getValue();
 
-            JSONArray workingInstancesArray = new JSONArray();
-            for (String instance : workingInstances) {
-                workingInstancesArray.put(instance);
+            JSONArray workingApiArray = new JSONArray();
+            JSONArray workingFrontendArray = new JSONArray();
+            for (Instance instance : workingInstances) {
+                workingApiArray.put(instance.getProtocol() + "://" + instance.getApi());
+                if (instance.getFrontEnd() != null) {
+                    workingFrontendArray.put(instance.getProtocol() + "://" + instance.getFrontEnd());
+                }
             }
 
             if (workingInstances.isEmpty()) {
                 logger.warn("No working instances for {}", friendlyService);
             }
 
-            serviceApi.put(service, workingInstancesArray);
+            serviceApi.put(service, workingApiArray);
+            serviceFrontendsApi.put(service, workingFrontendArray);
         }
 
         File serviceApiFile = new File("api.json");
+        File serviceFrontendsApiFile = new File("api_frontends.json");
         FileUtil.writeFile(serviceApi.toString(), serviceApiFile);
+        FileUtil.writeFile(serviceFrontendsApi.toString(), serviceFrontendsApiFile);
 
         // sort the instances by score
         instances.sort(Comparator.comparingDouble(Instance::getScore).reversed());
