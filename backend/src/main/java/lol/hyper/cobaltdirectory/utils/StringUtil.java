@@ -1,8 +1,8 @@
 package lol.hyper.cobaltdirectory.utils;
 
 import lol.hyper.cobaltdirectory.instance.Instance;
-import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.services.Services;
+import lol.hyper.cobaltdirectory.tests.TestResult;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
 
@@ -24,8 +24,8 @@ public class StringUtil {
     public static String buildInstanceTable(List<Instance> instances, String type) {
         StringBuilder table = new StringBuilder();
         // build the table for output
-        // instance (frontend), version, services, score
-        table.append("<div class=\"table-container\"><table id=\"sort-table\">\n<tr><th>Instance</th><th>Version</th><th>Services</th><th>Score</th></tr>\n");
+        // frontend, api, version, services, score
+        table.append("<div class=\"table-container\"><table id=\"sort-table\">\n<tr><th>Frontend</th><th>API</th><th>Version</th><th>Services</th><th>Score</th></tr>\n");
 
         List<Instance> filtered = instances.stream().filter(i -> {
                     String api = i.getApi();
@@ -36,37 +36,29 @@ public class StringUtil {
 
         // build each element for the table
         for (Instance instance : filtered) {
-            String instanceDisplay;
+            String frontEndDisplay;
+            String apiDisplay = instance.getApi();
             String version = instance.getVersion();
             String services;
             if (instance.isApiWorking()) {
-                if (instance.getApi().contains("imput.net")) {
-                    String imputServer = officialInstanceName(instance.getApi());
-                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a> (" + imputServer + ")";
+                services = instance.getServiceCount(true) + "/" + instance.getTestResults().size();
+                if (instance.getFrontEnd() == null) {
+                    frontEndDisplay = "N/A";
                 } else {
-                    if (instance.getFrontEnd() == null) {
-                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getApi() + "\">" + instance.getApi() + "</a>";
-                    } else {
-                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
-                    }
+                    frontEndDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
                 }
                 table.append("<tr class=\"").append(instance.getRating()).append("\">");
-                services = instance.getServiceCount(true) + "/" + instance.getTestResults().size();
             } else {
-                if (instance.getApi().contains("imput.net")) {
-                    String imputServer = officialInstanceName(instance.getApi());
-                    instanceDisplay = instance.getFrontEnd() + " (" + imputServer + ")";
+                if (instance.getFrontEnd() == null) {
+                    frontEndDisplay = "N/A";
                 } else {
-                    if (instance.getFrontEnd() == null) {
-                        instanceDisplay = instance.getApi();
-                    } else {
-                        instanceDisplay = instance.getFrontEnd();
-                    }
+                    frontEndDisplay = instance.getFrontEnd();
                 }
-                table.append("<tr class=\"offline\">");
                 services = "0/0";
+                table.append("<tr class=\"offline\">");
             }
-            table.append("<td>").append(instanceDisplay).append("</td>");
+            table.append("<td>").append(frontEndDisplay).append("</td>");
+            table.append("<td>").append(apiDisplay).append("</td>");
             table.append("<td>").append(version).append("</td>");
             table.append("<td>").append(services).append("</td>");
             // if the score is at least 0, that means we ran tests, link these tests
@@ -101,8 +93,9 @@ public class StringUtil {
 
         for (TestResult result : instance.getTestResults()) {
             String service = result.service();
+            String friendlyName = Services.getIdToFriendly().get(service);
             boolean working = result.status();
-            String serviceLink = "<a href=\"{{ site.url }}/service/" + Services.makeSlug(service).replace("*", "") + "\">" + service + "</a>";
+            String serviceLink = "<a href=\"{{ site.url }}/service/" + Services.makeSlug(service).replace("*", "") + "\">" + friendlyName + "</a>";
             table.append("<tr><td>").append(serviceLink).append("</td>");
             if (working) {
                 table.append("<td>").append("✅").append("</td>").append("<td>").append(makeLogPretty(result.message())).append("</td>");
@@ -119,11 +112,11 @@ public class StringUtil {
      * Build the table for a given service.
      *
      * @param instances The instances to use.
-     * @param service   The friendly service name.
+     * @param serviceId The id of the service name.
      * @param type      The type of instances we want.
      * @return A string of instances for this service.
      */
-    public static String buildServiceTable(List<Instance> instances, String service, String type) {
+    public static String buildServiceTable(List<Instance> instances, String serviceId, String type) {
         List<Instance> filtered = new ArrayList<>(instances.stream().filter(i -> {
                     String api = i.getApi();
                     if (api == null) return !type.equalsIgnoreCase("official");
@@ -135,50 +128,52 @@ public class StringUtil {
         // Store which instance works with this service
         Map<Instance, Boolean> workingInstances = new HashMap<>();
         for (Instance instance : filtered) {
-            boolean working = instance.getTestResults().stream().filter(testResult -> testResult.service().equals(service)).map(TestResult::status).findFirst().orElse(false);
+            boolean working = instance.getTestResults().stream().filter(testResult -> testResult.service().equals(serviceId)).map(TestResult::status).findFirst().orElse(false);
             workingInstances.put(instance, working);
         }
 
         StringBuilder table = new StringBuilder();
         // build the table for output
         // instance, status
-        table.append("<div class=\"table-container\"><table id=\"sort-table\"><tr><th>Instance</th><th>Working?</th></tr>\n");
+        table.append("<div class=\"table-container\"><table id=\"sort-table\"><tr><th>Frontend</th><th>API</th><th>Working?</th><th>Status</th></tr>\n");
 
         for (Map.Entry<Instance, Boolean> pair : workingInstances.entrySet()) {
             Instance instance = pair.getKey();
             boolean working = pair.getValue();
-            String instanceDisplay;
+            String frontEndDisplay;
+            String apiDisplay = instance.getApi();
+            String status;
+            // if results is null, we did not run a test
+            // this means the instance is offline
+            TestResult results = instance.getTestResults().stream().filter(testResult -> testResult.service().equals(serviceId)).findFirst().orElse(null);
+            if (results == null) {
+                status = "Offline";
+            } else {
+                status = makeLogPretty(results.message());
+            }
             if (instance.isApiWorking()) {
-                if (instance.getApi().contains("imput.net")) {
-                    String imputServer = officialInstanceName(instance.getApi());
-                    instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a> (" + imputServer + ")";
+                if (instance.getFrontEnd() == null) {
+                    frontEndDisplay = "N/A";
                 } else {
-                    if (instance.getFrontEnd() == null) {
-                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getApi() + "\">" + instance.getApi() + "</a>";
-                    } else {
-                        instanceDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
-                    }
+                    frontEndDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
                 }
                 table.append("<tr class=\"").append(instance.getRating()).append("\">");
             } else {
-                if (instance.getApi().contains("imput.net")) {
-                    String imputServer = officialInstanceName(instance.getApi());
-                    instanceDisplay = instance.getFrontEnd() + " (" + imputServer + ")";
+                if (instance.getFrontEnd() == null) {
+                    frontEndDisplay = "N/A";
                 } else {
-                    if (instance.getFrontEnd() == null) {
-                        instanceDisplay = instance.getApi();
-                    } else {
-                        instanceDisplay = instance.getFrontEnd();
-                    }
+                    frontEndDisplay = instance.getFrontEnd();
                 }
                 table.append("<tr class=\"offline\">");
             }
-            table.append("<td>").append(instanceDisplay).append("</td>");
+            table.append("<td>").append(frontEndDisplay).append("</td>");
+            table.append("<td>").append(apiDisplay).append("</td>");
             if (working) {
                 table.append("<td>").append("✅").append("</td>");
             } else {
                 table.append("<td>").append("❌").append("</td>");
             }
+            table.append("<td>").append(status).append("</td>");
             table.append("</tr>");
         }
         table.append("</table></div>");

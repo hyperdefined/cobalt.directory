@@ -125,11 +125,13 @@ public class CobaltDirectory {
                 for (Map.Entry<String, String> tests : services.getTests().entrySet()) {
                     String service = tests.getKey();
                     String url = tests.getValue();
+                    String friendlyService = Services.getIdToFriendly().get(service);
                     // skip the tests
                     if (skipTests) {
                         TestResult skippedTest = new TestResult(service, false, "Uses Cloudflare turnstile, unable to test via API (no API key)");
                         instance.addResult(skippedTest);
                     } else {
+                        logger.info("Making new test {} for {}", friendlyService, instance.getApi());
                         Test test = new Test(instance, service, url, token);
                         testsToRun.add(test);
                     }
@@ -204,6 +206,7 @@ public class CobaltDirectory {
         JSONObject serviceApi = new JSONObject();
         for (Map.Entry<String, List<String>> entry : servicesWithWorkingInstances.entrySet()) {
             String service = entry.getKey();
+            String friendlyService = services.getIdToFriendly().get(service);
             List<String> workingInstances = entry.getValue();
 
             JSONArray workingInstancesArray = new JSONArray();
@@ -212,7 +215,7 @@ public class CobaltDirectory {
             }
 
             if (workingInstances.isEmpty()) {
-                logger.warn("No working instances for {}", service);
+                logger.warn("No working instances for {}", friendlyService);
             }
 
             serviceApi.put(service, workingInstancesArray);
@@ -230,16 +233,16 @@ public class CobaltDirectory {
                 .min(Comparator.comparingLong(Instance::getStartTime))
                 .orElseThrow(() -> new IllegalStateException("No instance with a valid startTime"));
 
-        testResults.forEach((service, c) -> logger.info("{}: {}/{}", service, c.success, c.total));
+        testResults.forEach((service, c) -> logger.info("{}: {}/{}", Services.getIdToFriendly().get(service), c.success, c.total));
 
         logger.info("Oldest instance is: {}, starTime={}", oldestInstance.getApi(), oldestInstance.getStartTime());
 
         // write index and service pages
         if (makeWeb) {
             WebBuilder.buildIndex(instances, formattedDate);
-            for (String service : services.getTests().keySet()) {
+            for (String service : services.getServices()) {
                 String slug = Services.makeSlug(service);
-                WebBuilder.buildServicePage(instances, formattedDate, service, slug);
+                WebBuilder.buildServicePage(instances, formattedDate, slug);
             }
         }
 

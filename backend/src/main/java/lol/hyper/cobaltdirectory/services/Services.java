@@ -12,6 +12,7 @@ public class Services {
 
     private final JSONObject tests;
     private final Map<String, String> testsUrls = new HashMap<>();
+    private static final Map<String, String> idToFriendly = new HashMap<>();
     private final Logger logger = LogManager.getLogger(Services.class, CobaltDirectory.getMessageFactory());
     private final List<String> services = new ArrayList<>();
 
@@ -21,6 +22,8 @@ public class Services {
 
     public void importTests() {
         for (String service : tests.keySet()) {
+            String serviceId = makeSlug(service);
+
             logger.info("Importing test: {}", service);
             if (service.equalsIgnoreCase("xiaohongshu")) {
                 logger.info("Generating Xiaohongshu test video...");
@@ -29,12 +32,13 @@ public class Services {
                     logger.warn("Unable to dynamically get Xiaohongshu link!");
                 } else {
                     logger.info("Found valid Xiaohongshu link: {}", xiaohongshuUrl);
-                    testsUrls.put(service, xiaohongshuUrl);
+                    testsUrls.put(serviceId, xiaohongshuUrl);
                     continue;
                 }
             }
-            services.add(makeSlug(service));
-            testsUrls.put(service, tests.getString(service));
+            services.add(serviceId);
+            idToFriendly.put(serviceId, service);
+            testsUrls.put(serviceId, tests.getString(service));
         }
     }
 
@@ -49,5 +53,9 @@ public class Services {
 
     public List<String> getServices() {
         return services;
+    }
+
+    public static Map<String, String> getIdToFriendly() {
+        return idToFriendly;
     }
 }

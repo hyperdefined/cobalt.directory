@@ -2,6 +2,7 @@ package lol.hyper.cobaltdirectory.web;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
 import lol.hyper.cobaltdirectory.instance.Instance;
+import lol.hyper.cobaltdirectory.services.Services;
 import lol.hyper.cobaltdirectory.utils.FileUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
@@ -62,7 +63,7 @@ public class WebBuilder {
         String instanceAccess;
         if (instance.getFrontEnd() == null) {
             instanceTemplate = instanceTemplate.replaceAll("<frontend>", instance.getApi());
-            instanceAccess = "This instance does not have a web version. To use this instance, change your processing server <a href=\"https://cobalt.tools/settings/instances#community\">here</a> to <code>" + instance.getProtocol() + "://" + instance.getApi() + "</code>.";
+            instanceAccess = "This instance does not have a frontend. To use this instance, change your processing server <a href=\"https://cobalt.tools/settings/instances#community\">here</a> to <code>" + instance.getProtocol() + "://" + instance.getApi() + "</code>.";
         } else {
             if (instance.getApi().contains("imput.net")) {
                 String imputServer = StringUtil.officialInstanceName(instance.getApi());
@@ -93,10 +94,9 @@ public class WebBuilder {
      *
      * @param instances     The instances to put on the table.
      * @param formattedDate The date to display.
-     * @param service       The service friendly name.
-     * @param slug          The slug for the URL.
+     * @param serviceId     The service ID.
      */
-    public static void buildServicePage(List<Instance> instances, String formattedDate, String service, String slug) {
+    public static void buildServicePage(List<Instance> instances, String formattedDate, String serviceId) {
         // sort into alphabetical order
         Collections.sort(instances);
 
@@ -107,17 +107,17 @@ public class WebBuilder {
         }
 
         // create the official, domain, and no domain tables
-        String officialTable = StringUtil.buildServiceTable(new ArrayList<>(instances), service, "official");
-        String communityTable = StringUtil.buildServiceTable(new ArrayList<>(instances), service, "community");
+        String officialTable = StringUtil.buildServiceTable(new ArrayList<>(instances), serviceId, "official");
+        String communityTable = StringUtil.buildServiceTable(new ArrayList<>(instances), serviceId, "community");
 
         serviceTemplate = serviceTemplate.replaceAll("<time>", formattedDate);
-        serviceTemplate = serviceTemplate.replaceAll("<service>", service);
-        serviceTemplate = serviceTemplate.replaceAll("<service-slug>", slug);
+        serviceTemplate = serviceTemplate.replaceAll("<service>", Services.getIdToFriendly().get(serviceId));
+        serviceTemplate = serviceTemplate.replaceAll("<service-slug>", serviceId);
 
         // replace the placeholder with the tables
         serviceTemplate = serviceTemplate.replaceAll("<service-official-table>", officialTable);
         serviceTemplate = serviceTemplate.replaceAll("<service-community-table>", communityTable);
 
-        FileUtil.writeFile(serviceTemplate, new File(CobaltDirectory.getConfig().getString("service_path"), slug + ".md"));
+        FileUtil.writeFile(serviceTemplate, new File(CobaltDirectory.getConfig().getString("service_path"), serviceId + ".md"));
     }
 }
