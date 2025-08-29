@@ -93,9 +93,15 @@ public class StringUtil {
 
         for (TestResult result : instance.getTestResults()) {
             String service = result.service();
-            String friendlyName = Services.getIdToFriendly().get(service);
             boolean working = result.status();
-            String serviceLink = "<a href=\"{{ site.url }}/service/" + Services.makeSlug(service).replace("*", "") + "\">" + friendlyName + "</a>";
+            String serviceLink;
+            if (service.equalsIgnoreCase("frontend")) {
+                serviceLink = "Frontend";
+            } else {
+                String friendlyName = Services.getIdToFriendly().get(service);
+                serviceLink = "<a href=\"{{ site.url }}/service/" + Services.makeSlug(service).replace("*", "") + "\">" + friendlyName + "</a>";
+            }
+
             table.append("<tr><td>").append(serviceLink).append("</td>");
             if (working) {
                 table.append("<td>").append("✅").append("</td>").append("<td>").append(makeLogPretty(result.message())).append("</td>");

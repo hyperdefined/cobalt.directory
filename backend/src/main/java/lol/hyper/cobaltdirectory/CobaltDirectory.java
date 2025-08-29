@@ -206,7 +206,7 @@ public class CobaltDirectory {
         JSONObject serviceApi = new JSONObject();
         for (Map.Entry<String, List<String>> entry : servicesWithWorkingInstances.entrySet()) {
             String service = entry.getKey();
-            String friendlyService = services.getIdToFriendly().get(service);
+            String friendlyService = Services.getIdToFriendly().get(service);
             List<String> workingInstances = entry.getValue();
 
             JSONArray workingInstancesArray = new JSONArray();
