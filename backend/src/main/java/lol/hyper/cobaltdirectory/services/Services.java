@@ -23,6 +23,7 @@ public class Services {
     public void importTests() {
         for (String service : tests.keySet()) {
             String serviceId = makeSlug(service);
+            String serviceUrl = tests.getString(service);
 
             logger.info("Importing test: {}", service);
             if (service.equalsIgnoreCase("xiaohongshu")) {
@@ -32,13 +33,13 @@ public class Services {
                     logger.warn("Unable to dynamically get Xiaohongshu link!");
                 } else {
                     logger.info("Found valid Xiaohongshu link: {}", xiaohongshuUrl);
-                    testsUrls.put(serviceId, xiaohongshuUrl);
-                    continue;
+                    // override the url
+                    serviceUrl = xiaohongshuUrl;
                 }
             }
             services.add(serviceId);
             idToFriendly.put(serviceId, service);
-            testsUrls.put(serviceId, tests.getString(service));
+            testsUrls.put(serviceId, serviceUrl);
         }
     }
 
