@@ -7,10 +7,10 @@ Service status for <service> on all instances.
 
 Last updated (UTC): <time>
 
-### Official Instance
-The official cobalt.tools instances. There are different APIs, which are the names of the servers.
+### Official Instances
+The official cobalt.tools instances. There are different APIs as there are a few servers. However, the official cobalt.tools uses the best server for you.
 <service-official-table>
 
-### Community
-Community cobalt instances. These are not official, but safe to use. Report issues to the owners of the instances.
+### Community Instances
+Community cobalt instances. These are not official, but safe to use. Report issues to the owners of the instances. To use, click on the frontend link or add the API to [here](https://cobalt.tools/settings/instances#community).
 <service-community-table>

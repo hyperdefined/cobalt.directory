@@ -3,7 +3,7 @@ permalink: "/service/"
 title: "Services"
 description: "All services cobalt and download and their status per instance."
 ---
-You can see what instances work on what service below.
+To see what cobalt instances work for a certain service, use the list below.
 * [BiliBili]({{ site.url}}/service/bilibili)
 * [Bluesky]({{ site.url}}/service/bluesky)
 * [Dailymotion]({{ site.url}}/service/dailymotion)
@@ -27,3 +27,6 @@ You can see what instances work on what service below.
 * [YouTube]({{ site.url}}/service/youtube)
 * [YouTube Music]({{ site.url}}/service/youtube-music)
 * [YouTube Shorts]({{ site.url}}/service/youtube-shorts)
+
+
+This page shows what cobalt instances work/don't work for <service>.
