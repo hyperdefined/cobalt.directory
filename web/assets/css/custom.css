@@ -96,23 +96,23 @@ header h1 {
 .offline td {
     color: gray;
 }
-.working td, .working a{
+.working td, .working a {
     color: green;
 }
-.good td, .good a{
+.good td, .good a {
     color: lightgreen;
 }
-.decent td, .decent a{
+.decent td, .decent a {
     color: rgb(255, 255, 132);
 }
-.partial td, .partial a{
+.partial td, .partial a {
     color: orange;
 }
-.medium td, .medium a{
+.medium td, .medium a {
     color: salmon;
 }
-.bad td, .bad a{
-    color: red;
+.bad td, .bad a, .not-working td, .not-working a {
+    color: red !important;
 }
 /* Lightmode things */
 @media (prefers-color-scheme: light) {

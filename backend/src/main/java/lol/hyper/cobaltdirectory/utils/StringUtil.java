@@ -102,7 +102,14 @@ public class StringUtil {
                 serviceLink = "<a href=\"{{ site.url }}/service/" + Services.makeSlug(service).replace("*", "") + "\">" + friendlyName + "</a>";
             }
 
-            table.append("<tr><td>").append(serviceLink).append("</td>");
+            // yes check this boolean twice idc
+            if (working) {
+                table.append("<tr class=\"working\">");
+            } else {
+                table.append("<tr class=\"not-working\">");
+            }
+
+            table.append("<td>").append(serviceLink).append("</td>");
             if (working) {
                 table.append("<td>").append("✅").append("</td>").append("<td>").append(makeLogPretty(result.message())).append("</td>");
             } else {
@@ -158,12 +165,19 @@ public class StringUtil {
                 status = makeLogPretty(results.message());
             }
             if (instance.isApiWorking()) {
+                if (results != null) {
+                    String row = results.status() ? "working" : "not-working";
+                    table.append("<tr class=\"").append(row).append("\">");
+                } else {
+                    // this shouldn't happen, but fall back
+                    table.append("<tr>");
+                }
+
                 if (instance.getFrontEnd() == null) {
                     frontEndDisplay = "N/A";
                 } else {
                     frontEndDisplay = "<a href=\"" + instance.getProtocol() + "://" + instance.getFrontEnd() + "\">" + instance.getFrontEnd() + "</a>";
                 }
-                table.append("<tr class=\"").append(instance.getRating()).append("\">");
             } else {
                 if (instance.getFrontEnd() == null) {
                     frontEndDisplay = "N/A";
@@ -172,6 +186,7 @@ public class StringUtil {
                 }
                 table.append("<tr class=\"offline\">");
             }
+
             table.append("<td>").append(frontEndDisplay).append("</td>");
             table.append("<td>").append(apiDisplay).append("</td>");
             if (working) {
