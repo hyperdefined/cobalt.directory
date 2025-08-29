@@ -86,7 +86,7 @@ public class RequestUtil {
             content = stringBuilder.toString();
 
         } catch (Exception exception) {
-            logger.error("Unable to send post", exception);
+            logger.error("Unable to send post to {}", url, exception);
             return new RequestResults(null, responseCode, headers, exception);
         } finally {
             if (connection != null) {
@@ -195,45 +195,16 @@ public class RequestUtil {
     }
 
     /**
-     * Returns the status code of a given URL.
-     *
-     * @param urlString The URL to test.
-     * @return The status code.
-     */
-    public static RequestResults getStatusCode(String urlString) {
-        int statusCode;
-        HttpURLConnection connection = null;
-        try {
-            URL url = URI.create(urlString).toURL();
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
-            connection.connect();
-            statusCode = connection.getResponseCode();
-        } catch (IOException exception) {
-            logger.error("Unable to test url {}", urlString, exception);
-            return new RequestResults(null, -1, null, exception);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-        return new RequestResults(null, statusCode, null, null);
-    }
-
-    /**
      * Check the size of the length headers. cobalt sometimes reports it.
      * 0 means it failed.
      *
      * @param urlString The tunnel URL in cobalt's response.
      * @return A Headers record with the header name and its value, or null if not present.
      */
-    public static ContentLengthHeader checkTunnelLength(String urlString) {
+    public static ContentLengthHeader checkTunnelLength(String url) {
         HttpURLConnection connection = null;
         try {
-            URI connectUrl = new URI(urlString);
+            URI connectUrl = new URI(url);
             connection = (HttpURLConnection) connectUrl.toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
             connection.setRequestMethod("HEAD");
@@ -242,7 +213,7 @@ public class RequestUtil {
             connection.connect();
             return extractLength(connection);
         } catch (Exception exception) {
-            logger.error("Unable to read URL {}", urlString, exception);
+            logger.error("Unable to read URL {}", url, exception);
             return null;
         } finally {
             if (connection != null) {
@@ -270,7 +241,7 @@ public class RequestUtil {
 
             return connection.getResponseCode() == 200;
         } catch (Exception exception) {
-            logger.error("Unable to HEAD URL {}", url, exception);
+            logger.error("Unable to HEAD {}", url, exception);
             return false;
         } finally {
             if (connection != null) {
