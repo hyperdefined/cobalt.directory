@@ -27,6 +27,3 @@ To see what cobalt instances work for a certain service, use the list below.
 * [YouTube]({{ site.url}}/service/youtube)
 * [YouTube Music]({{ site.url}}/service/youtube-music)
 * [YouTube Shorts]({{ site.url}}/service/youtube-shorts)
-
-
-This page shows what cobalt instances work/don't work for <service>.
