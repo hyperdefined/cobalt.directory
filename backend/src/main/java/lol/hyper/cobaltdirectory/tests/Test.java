@@ -6,6 +6,7 @@ import lol.hyper.cobaltdirectory.requests.RequestResults;
 import lol.hyper.cobaltdirectory.services.Services;
 import lol.hyper.cobaltdirectory.utils.RequestUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -223,10 +224,11 @@ public class Test {
         // get the header in the response
         long size = checkTunnelLength.size();
         String header = checkTunnelLength.header();
+        String sizeReadable = FileUtils.byteCountToDisplaySize(size);
         // headers returned valid length
         if (size > 1000) {
             logger.info("Test PASS for {} with {} - HTTP 200, status={}, time={}ms, size={}, header={}", api, friendlyService, status, time, size, header);
-            instance.addResult(new TestResult(serviceId, true, "Working, returned valid status, and has valid " + header + " header"));
+            instance.addResult(new TestResult(serviceId, true, "Working, returned valid status, and has valid " + header + " header (" + sizeReadable + ")"));
             return;
         }
         // headers reported 0 content length, which means it failed
