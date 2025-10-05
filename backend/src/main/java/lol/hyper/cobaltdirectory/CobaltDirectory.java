@@ -103,9 +103,12 @@ public class CobaltDirectory {
 
         // create tests for all APIs that are working
         List<Test> testsToRun = new ArrayList<>();
+        int online = 0;
+        int offline = 0;
         for (Instance instance : instances) {
             // only create tests if the API is working
             if (instance.isApiWorking()) {
+                online++;
                 String token = null;
                 String api = instance.getApi();
                 logger.info("{} is ONLINE", instance.getApi());
@@ -125,13 +128,11 @@ public class CobaltDirectory {
                 for (Map.Entry<String, String> tests : services.getTests().entrySet()) {
                     String service = tests.getKey();
                     String url = tests.getValue();
-                    String friendlyService = Services.getIdToFriendly().get(service);
                     // skip the tests
                     if (skipTests) {
                         TestResult skippedTest = new TestResult(service, false, "Uses Cloudflare turnstile, unable to test via API (no API key)");
                         instance.addResult(skippedTest);
                     } else {
-                        logger.info("Making new test {} for {}", friendlyService, instance.getApi());
                         Test test = new Test(instance, service, url, token);
                         testsToRun.add(test);
                     }
@@ -143,8 +144,14 @@ public class CobaltDirectory {
                 }
             } else {
                 logger.warn("{} is OFFLINE", instance.getApi());
+                offline++;
             }
         }
+
+        double onlinePercent = (double) Math.round((double) online / (online + offline) * 100) / 100;
+        double offlinePercent = (double) Math.round((double) offline / (online + offline) * 100) / 100;
+        logger.info("Online: {} - {}%", online, onlinePercent);
+        logger.info("Offline: {} - {}%", offline, offlinePercent);
 
         if (testsToRun.isEmpty()) {
             logger.warn("No tests to run, exiting...");
