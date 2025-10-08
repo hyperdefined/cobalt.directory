@@ -8,7 +8,6 @@ import lol.hyper.cobaltdirectory.tests.TestBuilder;
 import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.utils.FileUtil;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
-import lol.hyper.cobaltdirectory.web.WebBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
@@ -24,7 +23,6 @@ public class CobaltDirectory {
 
     private static Logger logger;
     private static String USER_AGENT;
-    private static JSONObject config;
     private static final ReusableMessageFactory MESSAGE_FACTORY = new ReusableMessageFactory();
 
     static class TestCounter {
@@ -40,15 +38,6 @@ public class CobaltDirectory {
 
         Init init = new Init();
         init.start(args);
-        // should we make the pages for web?
-        boolean makeWeb = init.makeWeb();
-
-        // load the config
-        config = init.getConfig();
-        if (config == null) {
-            logger.error("Unable to load config! Exiting...");
-            System.exit(1);
-        }
 
         // set the user agent
         USER_AGENT = init.getUserAgent();
@@ -85,7 +74,6 @@ public class CobaltDirectory {
             // build the instance
             logger.info("Setting up instance {}", api);
             Instance newInstance = new Instance(frontEnd, api, protocol);
-            newInstance.setHash(StringUtil.makeHash(api));
             instances.add(newInstance);
         }
 
@@ -167,15 +155,12 @@ public class CobaltDirectory {
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         String formattedDate = f.format(new Date());
 
-        // calculate the scores for all instances
-        instances.forEach(Instance::calculateScore);
-
         // check for dupes
         findDuplicates(instances);
 
-        JSONObject instancesResults = new JSONObject();
-        File instancesResultsFile = new File("results.json");
-        Map<String, TestCounter> testResults = new HashMap<>();
+        JSONArray testResults = new JSONArray();
+        File testResultsOutput = new File("results.json");
+        Map<String, TestCounter> testResultsCounter = new HashMap<>();
         // idk what to call this
         Map<String, List<Instance>> servicesWithWorkingInstances = new HashMap<>();
         for (String service : services.getServices()) {
@@ -183,30 +168,41 @@ public class CobaltDirectory {
         }
 
         for (Instance instance : instances) {
-            if (!instance.isApiWorking()) {
-                instance.setScore(-1.0);
-                continue;
-            }
+
+            JSONObject instanceResults = new JSONObject();
+            instanceResults.put("api", instance.getApi());
+            instanceResults.put("frontend", instance.getFrontEnd());
+            instanceResults.put("protocol", instance.getProtocol());
+            instanceResults.put("online", instance.isApiWorking());
+            instanceResults.put("version", instance.getVersion());
+            instanceResults.put("remote", instance.getRemote());
+
+            JSONObject tests = new JSONObject();
 
             for (TestResult r : instance.getTestResults()) {
-                TestCounter c = testResults.computeIfAbsent(r.service(), s -> new TestCounter());
+                JSONObject serviceResults = new JSONObject();
+                String service = r.service();
+                boolean status = r.status();
+
+                serviceResults.put("status", status);
+                serviceResults.put("message", StringUtil.makeLogPretty(r.message()));
+                serviceResults.put("friendly", Services.getIdToFriendly().get(r.service()));
+
+                TestCounter c = testResultsCounter.computeIfAbsent(r.service(), s -> new TestCounter());
                 c.total++;
 
-                String service = Services.makeSlug(r.service());
-                if (r.status()) {
+                if (status) {
                     if (!r.service().equals("Frontend")) {
                         servicesWithWorkingInstances.computeIfAbsent(service, k -> new ArrayList<>()).add(instance);
                     }
                     c.success++;
                 }
+
+                tests.put(service, serviceResults);
             }
 
-            instancesResults.put(instance.getApi(), instance.toJSON());
-
-            // write each instance page
-            if (makeWeb) {
-                WebBuilder.buildInstancePage(instance, formattedDate);
-            }
+            instanceResults.put("tests", tests);
+            testResults.put(instanceResults);
         }
 
         // store which service support what instance
@@ -239,30 +235,18 @@ public class CobaltDirectory {
         FileUtil.writeFile(serviceApi.toString(), serviceApiFile);
         FileUtil.writeFile(serviceFrontendsApi.toString(), serviceFrontendsApiFile);
 
-        // sort the instances by score
-        instances.sort(Comparator.comparingDouble(Instance::getScore).reversed());
-
         // get the longest running instance for fun
         Instance oldestInstance = instances.stream()
                 .filter(Instance::isApiWorking).filter(instance -> instance.getStartTime() != 0)
                 .min(Comparator.comparingLong(Instance::getStartTime))
                 .orElseThrow(() -> new IllegalStateException("No instance with a valid startTime"));
 
-        testResults.forEach((service, c) -> logger.info("{}: {}/{}", Services.getIdToFriendly().get(service), c.success, c.total));
+        testResultsCounter.forEach((service, c) -> logger.info("{}: {}/{}", Services.getIdToFriendly().get(service), c.success, c.total));
 
         logger.info("Oldest instance is: {}, starTime={}", oldestInstance.getApi(), oldestInstance.getStartTime());
 
-        // write index and service pages
-        if (makeWeb) {
-            WebBuilder.buildIndex(instances, formattedDate);
-            for (String service : services.getServices()) {
-                String slug = Services.makeSlug(service);
-                WebBuilder.buildServicePage(instances, formattedDate, slug);
-            }
-        }
-
-        logger.info("Saving results to {}", instancesResultsFile.getAbsolutePath());
-        FileUtil.writeFile(instancesResults.toString(), instancesResultsFile);
+        logger.info("Saving results to {}", testResultsOutput.getAbsolutePath());
+        FileUtil.writeFile(testResults.toString(), testResultsOutput);
 
         // display how long the test took
         long endTime = System.nanoTime();
@@ -295,10 +279,6 @@ public class CobaltDirectory {
 
     public static String getUserAgent() {
         return USER_AGENT;
-    }
-
-    public static JSONObject getConfig() {
-        return config;
     }
 
     public static ReusableMessageFactory getMessageFactory() {

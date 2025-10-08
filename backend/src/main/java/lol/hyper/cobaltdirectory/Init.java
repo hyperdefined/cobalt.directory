@@ -19,10 +19,8 @@ public class Init {
 
     private final Logger logger = LogManager.getLogger(this);
     private String userAgent;
-    private JSONObject config;
     private JSONObject tests;
     private JSONObject apiKeys;
-    private boolean makeWeb = false;
     private List<String> instanceFileContents;
 
     public void start(String[] args) {
@@ -48,13 +46,6 @@ public class Init {
         int availableThreads = Runtime.getRuntime().availableProcessors();
         logger.info("Total available threads: {}", availableThreads);
 
-        // load the config
-        try {
-            loadConfig();
-        } catch (Exception e) {
-            logger.error("Exception while loading config", e);
-        }
-
         // parse the args
         String instanceFile = "instances"; // this is the default
         for (String arg : args) {
@@ -64,17 +55,10 @@ public class Init {
             if (key.equalsIgnoreCase("instances")) {
                 instanceFile = value;
             }
-            if (key.equalsIgnoreCase("web")) {
-                makeWeb = Boolean.parseBoolean(value);
-            }
         }
 
         // load files
         setupFiles(instanceFile);
-    }
-
-    public JSONObject getConfig() {
-        return config;
     }
 
     public String getUserAgent() {
@@ -91,10 +75,6 @@ public class Init {
 
     public List<String> getInstanceFileContents() {
         return instanceFileContents;
-    }
-
-    public boolean makeWeb() {
-        return makeWeb;
     }
 
     /**
@@ -118,28 +98,6 @@ public class Init {
                 return fullCommitID.substring(0, 7);
             }
         }
-    }
-
-    /**
-     * Loads the config from config.json.
-     */
-    private void loadConfig() {
-        File configFile = new File("config.json");
-        if (!configFile.exists() || FileUtil.readFile(configFile) == null) {
-            config = new JSONObject();
-            config.put("web_path", "../web/");
-            config.put("score_path", "../web/instance");
-            config.put("service_path", "../web/service");
-            logger.warn("Config file does not exist! Creating default...");
-            FileUtil.writeFile(config.toString(4), new File("config.json"));
-        }
-        String contents = FileUtil.readFile(configFile);
-        if (contents == null) {
-            logger.error("config.json exists, but unable to read contents of it!");
-            config = null;
-            return;
-        }
-        config = new JSONObject(contents);
     }
 
     private void setupFiles(String instanceFile) {

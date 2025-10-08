@@ -41,6 +41,7 @@ public class Services {
             idToFriendly.put(serviceId, service);
             testsUrls.put(serviceId, serviceUrl);
         }
+        idToFriendly.put("frontend", "Frontend");
     }
 
     public static String makeSlug(String service) {

@@ -1,12 +1,9 @@
 package lol.hyper.cobaltdirectory.instance;
 
 import lol.hyper.cobaltdirectory.tests.TestResult;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 public class Instance implements Comparable<Instance> {
 
@@ -14,17 +11,12 @@ public class Instance implements Comparable<Instance> {
     private final String api;
     private final String protocol;
     private String version;
-    private String commit;
-    private String branch;
     private long startTime;
     private boolean apiWorking;
-    private boolean frontEndWorking;
-    private double score;
-    private String hash;
     private boolean is10;
     private boolean turnstile = false;
-    private String rating;
     private boolean fork;
+    private String remote;
 
     private final List<TestResult> testResults = new ArrayList<>();
 
@@ -32,33 +24,6 @@ public class Instance implements Comparable<Instance> {
         this.frontEnd = frontEnd;
         this.api = api;
         this.protocol = protocol;
-    }
-
-    public JSONObject toJSON() {
-        JSONObject instanceJSON = new JSONObject();
-        instanceJSON.put("version", this.version);
-        instanceJSON.put("commit", this.commit);
-        instanceJSON.put("branch", this.branch);
-        instanceJSON.put("api", this.api);
-        instanceJSON.put("startTime", Long.valueOf(this.startTime));
-        instanceJSON.put("api_online", this.apiWorking);
-        instanceJSON.put("frontend_online", this.frontEndWorking);
-        instanceJSON.put("frontEnd", Objects.requireNonNullElse(frontEnd, "None"));
-        instanceJSON.put("protocol", protocol);
-        instanceJSON.put("score", score);
-        instanceJSON.put("fork", fork);
-        instanceJSON.put("turnstile", turnstile);
-        JSONObject workingServices = new JSONObject();
-        for (TestResult result : testResults) {
-            String service = result.service().toLowerCase(Locale.ROOT).replace(" ", "_");
-            // skip frontend here
-            if (service.equalsIgnoreCase("Frontend")) {
-                continue;
-            }
-            workingServices.put(service, result.status());
-        }
-        instanceJSON.put("services", workingServices);
-        return instanceJSON;
     }
 
     public String toString() {
@@ -81,14 +46,6 @@ public class Instance implements Comparable<Instance> {
         return version;
     }
 
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
-    public void setCommit(String commit) {
-        this.commit = commit;
-    }
-
     public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
@@ -103,14 +60,6 @@ public class Instance implements Comparable<Instance> {
 
     public void setApiWorking(boolean apiWorking) {
         this.apiWorking = apiWorking;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    public double getScore() {
-        return score;
     }
 
     public boolean is10() {
@@ -129,16 +78,12 @@ public class Instance implements Comparable<Instance> {
         return turnstile;
     }
 
-    public void setFrontEndWorking(boolean status) {
-        this.frontEndWorking = status;
+    public String getRemote() {
+        return remote;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    public String getHash() {
-        return hash;
+    public void setRemote(String remote) {
+        this.remote = remote;
     }
 
     public List<TestResult> getTestResults() {
@@ -153,10 +98,6 @@ public class Instance implements Comparable<Instance> {
         return startTime;
     }
 
-    public String getRating() {
-        return rating;
-    }
-
     public boolean isFork() {
         return fork;
     }
@@ -165,44 +106,8 @@ public class Instance implements Comparable<Instance> {
         this.fork = fork;
     }
 
-    public int getServiceCount(boolean status) {
-        return (int) testResults.stream()
-                .filter(result -> result.status() == status)
-                .count();
-    }
-
-    public void calculateScore() {
-        long workingServices = testResults.stream().filter(TestResult::status).count();
-        int totalTestsRan = testResults.size();
-        if (totalTestsRan > 0) {
-            score = ((double) workingServices / totalTestsRan) * 100;
-        } else {
-            score = 0;
-        }
-        if (score == 100) {
-            rating = "working";
-        }
-        if (score == 0) {
-            rating = "bad";
-        }
-        if (score >= 1 & score < 25) {
-            rating = "medium";
-        }
-        if (score >= 25 & score < 50) {
-            rating = "partial";
-        }
-        if (score >= 50 & score < 75) {
-            rating = "decent";
-        }
-        if (score >= 75 & score < 100) {
-            rating = "good";
-        }
-    }
-
     public void setOffline() {
         this.setApiWorking(false);
-        this.setCommit("Offline");
-        this.setBranch("Offline");
         this.setVersion("Offline");
     }
 

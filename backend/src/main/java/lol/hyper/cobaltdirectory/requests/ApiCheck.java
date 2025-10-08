@@ -78,15 +78,6 @@ public class ApiCheck {
             instance.setOffline();
             return;
         }
-
-        if (json.has("commit")) {
-            String commit = json.getString("commit");
-            instance.setCommit(StringEscapeUtils.escapeHtml4(commit));
-        }
-        if (json.has("branch")) {
-            String branch = json.getString("branch");
-            instance.setBranch(StringEscapeUtils.escapeHtml4(branch));
-        }
         if (json.has("startTime")) {
             String startTimeString = String.valueOf(json.getLong("startTime"));
             if (startTimeString.matches("[0-9]+")) {
@@ -115,9 +106,8 @@ public class ApiCheck {
         // some people remove this for no reason
         if (response.has("git")) {
             JSONObject git = response.getJSONObject("git");
-            instance.setBranch(StringEscapeUtils.escapeHtml4(git.getString("branch")));
-            instance.setCommit(StringEscapeUtils.escapeHtml4(git.getString("commit").substring(0, 6)));
-            String remote = git.getString("remote");
+            String remote = StringEscapeUtils.escapeHtml4(git.getString("remote"));
+            instance.setRemote(remote);
             if (!remote.equalsIgnoreCase("imputnet/cobalt") && !remote.equalsIgnoreCase("wukko/cobalt")) {
                 logger.warn("{} is running a FORK, remote is {}", instance.getApi(), remote);
                 instance.setFork(true);
@@ -126,8 +116,6 @@ public class ApiCheck {
             }
         } else {
             logger.warn("{} is missing git information!", instance.getApi());
-            instance.setBranch(null);
-            instance.setCommit(null);
         }
 
         // on cobalt 10, check to see if the instance has turnstile on
