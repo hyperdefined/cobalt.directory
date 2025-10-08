@@ -80,19 +80,14 @@
             {#key s.key}
               <tr class={rowClass(data.instance.online, s.status)}>
                 <td>
-                  {#if s.key.toLowerCase() === 'frontend'}
-                    <!-- Frontend is included, but not a link -->
-                    {s.friendly}
-                  {:else}
-                    <a href={`/service/${slugify(s.key)}`}>{s.friendly}</a>
-                  {/if}
+                  {s.friendly}
                 </td>
                 <td>{data.instance.online ? (s.status ? '✅' : '❌') : '❌'}</td>
                 <td>{data.instance.online ? s.message : 'Offline'}</td>
               </tr>
             {/key}
           {/each}
-        </tbody>
+      </tbody>
       </table>
     </div>
   </div>
