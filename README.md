@@ -10,7 +10,7 @@ Load instances -> Make sure API/frontend exist -> Perform tests -> Build site.
 ## Contributing
 The project contains 2 parts:
 * `backend` - Module that loads and tests the instances.
-* `web` - Module for building the site, using Jekyll.
+* `web` - Module for building the site, using Svelte.
 
 ## How to use?
 You can see a live demo at [cobalt.directory](https://cobalt.directory).
