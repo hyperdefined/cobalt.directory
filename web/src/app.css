@@ -1,0 +1,135 @@
+html {
+    -webkit-text-size-adjust: 100%;
+}
+body {
+    max-width: 90%;
+    font-family: "Noto Sans Mono", Consolas, "SF Mono", monospace;
+}
+
+h1 {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+}
+
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+td, th {
+    white-space: nowrap;
+}
+blockquote h4 {
+    padding-top: 0;
+}
+details[open] summary {
+    padding-bottom: 10px;
+}
+a button {
+    background-color: rgb(25, 25, 25);
+    border: 0.5px solid white;
+}
+a button:hover {
+    background-color: rgb(30, 30, 30);
+}
+a {
+    background: rgb(225, 225, 225);
+    color: black;
+    text-decoration: underline;
+}
+a:hover {
+    color: black;
+}
+td {
+    color: white;
+}
+td a {
+    background: unset;
+    color: white;
+    text-decoration: underline;
+}
+td a:hover {
+    background: unset;
+    color: gray;
+    text-decoration: underline;
+}
+.service-table a, .service-table td {
+    color: white;
+}
+.rating-offline td {
+    color: gray;
+}
+.rating-working td, .rating-working a {
+    color: green;
+}
+.rating-good td, .rating-good a {
+    color: lightgreen;
+}
+.rating-decent td, .rating-decent a {
+    color: rgb(255, 255, 132);
+}
+.rating-partial td, .rating-partial a {
+    color: orange;
+}
+.rating-medium td, .rating-medium a {
+    color: salmon;
+}
+.rating-bad td, .rating-bad a, .rating-not-working td, .rating-not-working a {
+    color: red !important;
+}
+hr {
+    border-image: linear-gradient(
+            to right,
+            red,
+            orange,
+            yellow,
+            green,
+            blue,
+            indigo,
+            violet
+        )
+        1;
+}
+/* Lightmode things */
+@media (prefers-color-scheme: light) {
+    header, footer {
+        background-color: rgb(255, 255, 255)
+    }
+    .service-table a, .service-table td {
+        color: black;
+    }
+    pre {
+        background: rgb(25, 25, 25);
+    }
+    .medium td, .medium a{
+        color: rgb(255, 76, 76);
+    }
+    .offline td {
+        color: black;
+    }
+    .partial td, .partial a{
+        color: rgb(202, 131, 0);
+    }
+    .working td, .working a{
+        color: rgb(0, 88, 0);
+    }
+    .good td, .good a{
+        color: rgb(92, 170, 92);
+    }
+    .decent td, .decent a{
+        color: rgb(212, 181, 0);
+    }
+}
+
+
+@media (max-width: 500px) {
+    h1 {
+      font-size: 1.5rem;
+    }
+    h2 {
+        font-size: 1.25rem;
+    }
+    body {
+        font-size: 0.8rem;
+    }
+  }

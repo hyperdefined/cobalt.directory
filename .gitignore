@@ -39,13 +39,19 @@ build/
 .DS_Store
 
 ### Web Module ###
-web/Gemfile.lock
-web/_site
-web/instances.json
-web/instance
-web/service
-web/index.md
-web/web-output
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+bun.lockb
+.svelte-kit/
+build/
+dist/
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+web/data/results.json
+web/api.json
+web/api_frontends.json
 
 ### Backend Module ##
 logs/
