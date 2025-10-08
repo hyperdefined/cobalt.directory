@@ -1,8 +1,7 @@
 import { json } from '@sveltejs/kit';
 import fs from 'node:fs';
 import path from 'node:path';
-import { API_JSON_PATH } from '$env/static/private';
-import { API_FRONTENDS_JSON_PATH } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export const GET = async ({ url }) => {
 	const type = url.searchParams.get('type') ?? 'api';
@@ -16,8 +15,8 @@ export const GET = async ({ url }) => {
 	}
 
 	const fileMap = {
-		api: API_JSON_PATH ?? '/data/api.json',
-		frontends: API_FRONTENDS_JSON_PATH ?? '/data/api_frontends.json'
+		api: env.API_JSON_PATH ?? '/data/api.json',
+		frontends: env.API_FRONTENDS_JSON_PATH ?? '/data/api_frontends.json'
 	};
 
 	const filePath = fileMap[type];
