@@ -28,10 +28,7 @@
 
 <svelte:head>
 	{#if !dev}
-		<script
-			defer
-			data-domain="cobalt.directory"
-			src="https://plausible.canine.tools/js/script.js">
+		<script defer data-domain="cobalt.directory" src="https://plausible.canine.tools/js/script.js">
 		</script>
 	{/if}
 </svelte:head>
