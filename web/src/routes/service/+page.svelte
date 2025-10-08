@@ -4,6 +4,7 @@
   import OfficialBlurb from '$lib/components/OfficialBlurb.svelte';
   import CommunityBlurb from '$lib/components/CommunityBlurb.svelte';
   import { page } from '$app/state';
+  import { fmtTime } from '$lib/utils/time';
 
   const siteUrl = page.url.origin;
   const currentUrl = page.url.href;
@@ -16,13 +17,6 @@
   let selectedKey = '';
 
   const safeHost = (h?: string | null) => h?.replace(/^https?:\/\//, '') ?? '';
-
-  const fmtTime = (iso: string) => {
-    const d = new Date(iso);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${d.getUTCFullYear()}-${months[d.getUTCMonth()]}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
-  };
 
   const rowClass = (r: { online: boolean; working: boolean }) =>
     !r.online ? 'rating-offline' : r.working ? 'rating-working' : 'rating-not-working';

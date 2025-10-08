@@ -4,6 +4,7 @@
   import CommunityBlurb from '$lib/components/CommunityBlurb.svelte';
   export let data: PageData;
   import { page } from '$app/state';
+  import { fmtTime } from '$lib/utils/time';
 
   const siteUrl = page.url.origin;
 
@@ -41,6 +42,9 @@
 <div>
   <!-- OFFICIAL -->
   <section>
+    <p>cobalt.directory is <strong>unofficial</strong> site to track cobalt instances that are safe to use & what services work on them. This site updates every ~10 minutes.</p>
+    <p>There are 2 lists, official and community below. You can also <a href="{siteUrl}/service">search by service</a>, <a href="{siteUrl}/faq">read the FAQ</a>, <a href="{siteUrl}/about">or learn about the site</a>.</p>
+    <p>Last updated (UTC): {fmtTime(data.lastUpdatedUTC)}</p>
     <h2>Official Instances</h2>
     <OfficialBlurb />
 
