@@ -1,4 +1,4 @@
-<footer>
+<footer class="rainbow-top">
 	<p>
 		This site is not official or related to <a href="https://imput.net/">imput.net</a> (the creators
 		of cobalt).
@@ -23,8 +23,6 @@
 		margin: 2rem calc(0px - (50vw - 50%)) -2rem;
 		padding-left: calc(50vw - 50%);
 		padding-right: calc(50vw - 50%);
-		border-top: 3px solid;
-		border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
 	}
 	footer > *:first-child {
 		margin-bottom: 0;
@@ -33,5 +31,37 @@
 
 	footer > *:last-child {
 		margin-top: 0;
+	}
+
+	.rainbow-top {
+		position: relative;
+		background: rgb(25, 25, 25);
+	}
+
+	.rainbow-top::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: 3px;
+		pointer-events: none;
+		z-index: 1;
+
+		background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet, red);
+		background-size: 200% 100%;
+		animation: rainbow-slide 8s linear infinite;
+	}
+
+	@keyframes rainbow-slide {
+		to {
+			background-position: 200% 0;
+		}
+	}
+
+	@media (prefers-color-scheme: light) {
+		footer {
+			background-color: #f6f8fa !important;
+		}
 	}
 </style>

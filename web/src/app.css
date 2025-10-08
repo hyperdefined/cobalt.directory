@@ -94,10 +94,6 @@ hr {
 }
 /* Lightmode things */
 @media (prefers-color-scheme: light) {
-	header,
-	footer {
-		background-color: rgb(255, 255, 255);
-	}
 	.service-table a,
 	.service-table td {
 		color: black;
@@ -105,27 +101,27 @@ hr {
 	pre {
 		background: rgb(25, 25, 25);
 	}
-	.medium td,
-	.medium a {
+	.rating-medium td,
+	.rating-medium a {
 		color: rgb(255, 76, 76);
 	}
-	.offline td {
+	.rating-offline td {
 		color: black;
 	}
-	.partial td,
-	.partial a {
+	.rating-partial td,
+	.rating-partial a {
 		color: rgb(202, 131, 0);
 	}
-	.working td,
-	.working a {
+	.rating-working td,
+	.rating-working a {
 		color: rgb(0, 88, 0);
 	}
-	.good td,
-	.good a {
+	.rating-good td,
+	.rating-good a {
 		color: rgb(92, 170, 92);
 	}
-	.decent td,
-	.decent a {
+	.rating-decent td,
+	.rating-decent a {
 		color: rgb(212, 181, 0);
 	}
 }

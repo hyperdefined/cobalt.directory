@@ -12,7 +12,6 @@
 
 	const { instances, services, lastUpdatedUTC } = data;
 
-
 	let selectedKey = '';
 
 	const safeHost = (h?: string | null) => h?.replace(/^https?:\/\//, '') ?? '';
