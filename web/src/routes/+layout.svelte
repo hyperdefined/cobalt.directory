@@ -6,6 +6,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { dev } from '$app/environment';
 
 	const SITE_SUFFIX = ' - cobalt.directory';
 
@@ -24,6 +25,16 @@
 	onMount(updateTitle);
 	afterNavigate(updateTitle);
 </script>
+
+<svelte:head>
+	{#if !dev}
+		<script
+			defer
+			data-domain="cobalt.directory"
+			src="https://plausible.canine.tools/js/script.js">
+		</script>
+	{/if}
+</svelte:head>
 
 <Header />
 <main>
