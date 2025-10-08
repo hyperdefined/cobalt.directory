@@ -69,8 +69,7 @@
 
 	<ul>
 		<li>
-			<a href="/" data-sveltekit-preload-data>Instance list</a>: see all cobalt
-			instances.
+			<a href="/" data-sveltekit-preload-data>Instance list</a>: see all cobalt instances.
 		</li>
 		<li>
 			<a href="/service" data-sveltekit-preload-data>By service</a>: see what services work on what
