@@ -12,7 +12,7 @@
 
 	const { instances, services, lastUpdatedUTC } = data;
 
-	// Nothing selected initially
+
 	let selectedKey = '';
 
 	const safeHost = (h?: string | null) => h?.replace(/^https?:\/\//, '') ?? '';
@@ -25,7 +25,6 @@
 
 	// derive friendly name from selection
 	$: friendlyName = services.find((s) => s.key === selectedKey)?.name ?? selectedKey;
-
 	// compute table rows dynamically
 	$: rows = (() => {
 		if (!selectedKey) return { official: [], community: [] };
@@ -34,7 +33,28 @@
 			.map((inst) => {
 				const entry = inst.tests?.[selectedKey];
 				const online = inst.online !== false;
-				if (!entry && online) return null;
+
+				if (!entry && !online) {
+					return {
+						officialComputed: isOfficial(inst.api),
+						frontend: inst.frontend ?? null,
+						api: inst.api ?? '',
+						online,
+						working: false,
+						message: 'Offline'
+					};
+				}
+
+				if (!entry && online) {
+					return {
+						officialComputed: isOfficial(inst.api),
+						frontend: inst.frontend ?? null,
+						api: inst.api ?? '',
+						online,
+						working: false,
+						message: 'Unsupported'
+					};
+				}
 
 				return {
 					officialComputed: isOfficial(inst.api),
@@ -64,13 +84,13 @@
 	<meta property="og:title" content="Search By Service" />
 	<meta
 		property="og:description"
-		content="All services cobalt and download and their status per instance."
+		content="All services cobalt can download and their status per instance."
 	/>
 	<meta property="twitter:url" content={currentUrl} />
 	<meta name="twitter:title" content="Search By Service" />
 	<meta
 		name="twitter:description"
-		content="All services cobalt and download and their status per instance."
+		content="All services cobalt can download and their status per instance."
 	/>
 </svelte:head>
 
@@ -113,7 +133,7 @@
 						{#if rows.official.length === 0}
 							<tr><td colspan="4">No official instances found.</td></tr>
 						{:else}
-							{#each rows.official as r (r.frontend)}
+							{#each rows.official as r (r.api)}
 								<tr class={rowClass(r)}>
 									<td>
 										{#if !r.frontend || r.frontend.trim() === ''}
@@ -156,7 +176,7 @@
 						{#if rows.community.length === 0}
 							<tr><td colspan="4">No community instances found.</td></tr>
 						{:else}
-							{#each rows.community as r (r.frontend)}
+							{#each rows.community as r (r.api)}
 								<tr class={rowClass(r)}>
 									<td>
 										{#if !r.frontend || r.frontend.trim() === ''}
