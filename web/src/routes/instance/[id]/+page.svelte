@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import { fmtTime } from '$lib/utils/time';
 	import { page } from '$app/state';
+	import ClickToCopy from '$lib/components/ClickToCopy.svelte';
 
 	const currentUrl = page.url.href;
 
@@ -62,8 +63,8 @@
 		</h2>
 
 		<p>
-			The instance ID is <code>{data.id}</code>. You can bookmark this page to see service status in
-			the future for this instance.
+			The instance ID is <ClickToCopy text={data.id} />. You can bookmark this page to see service
+			status in the future for this instance.
 		</p>
 
 		<div style="margin: 0.5rem 0 1rem;">
@@ -77,13 +78,10 @@
 		</div>
 
 		<p>
-			This table shows what services work for&nbsp;
-			<code
-				>{data.instance.titleHost}
-				{#if data.instance.apiNick}
-					&nbsp;({data.instance.apiNick})
-				{/if}
-			</code>. API URL for this instance is <code>https://{data.instance.apiHost}</code>.
+			This table shows what services work for
+			<ClickToCopy
+				text={`${data.instance.titleHost}${data.instance.apiNick ? ` (${data.instance.apiNick})` : ''}`}
+			/>. API URL for this instance is <ClickToCopy text="https://{data.instance.apiHost}" />.
 		</p>
 
 		<p>Last updated (UTC): {fmtTime(data.lastUpdatedUTC)}</p>

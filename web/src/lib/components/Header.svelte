@@ -23,8 +23,9 @@
 	</button>
 	<nav id="site-nav" class="nav-menu" class:active={menuOpen}>
 		<ul>
-			<li><a href="/">Instances</a></li>
+			<li><a href="/">Instance List</a></li>
 			<li><a href="/service" data-sveltekit-preload-data>Search By Service</a></li>
+			<li><a href="/api">API</a></li>
 			<li><a href="/about">About</a></li>
 			<li><a href="/faq">FAQ</a></li>
 			<li><a href="https://github.com/hyperdefined/cobalt.directory">Source</a></li>
@@ -38,6 +39,7 @@
 		flex-direction: column;
 		align-items: center;
 		position: relative;
+		padding-bottom: 1.3rem;
 	}
 	.rainbow-bottom {
 		position: relative;

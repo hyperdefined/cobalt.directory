@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import ClickToCopy from '$lib/components/ClickToCopy.svelte';
 	const currentUrl = page.url.href;
 </script>
 
@@ -18,14 +19,18 @@
 	cobalt.directory has a public API. You can use this to query the instances and the service
 	results.
 </p>
+<p>
+	Each API endpoint follows the same structure. They all have <code>lastUpdatedUTC</code> to show
+	when it was last updated. All data in the endpoint is in the <code>data</code> key.
+</p>
 
 <h3>Tests Results</h3>
+<ClickToCopy text="https://cobalt.directory/api/tests" /><br /><br />
 <p>
 	This endpoint lists all instances and what tests we ran for each one. In each test, it shows what
 	the result was.
 </p>
-
-<code>https://cobalt.directory/api/tests</code>
+<p>You can use this to query all instances at once to see their tests and data.</p>
 
 <h3>"Working" Instances</h3>
 <p>
@@ -33,5 +38,5 @@
 	show the APIs or frontends in the list.
 </p>
 
-<code>https://cobalt.directory/api/working?type=frontends</code><br />
-<code>https://cobalt.directory/api/working?type=api</code>
+<ClickToCopy text="https://cobalt.directory/api/working?type=frontends" /><br />
+<ClickToCopy text="https://cobalt.directory/api/working?type=api" /><br />
