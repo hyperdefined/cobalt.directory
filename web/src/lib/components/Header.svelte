@@ -43,7 +43,6 @@
 	}
 	.rainbow-bottom {
 		position: relative;
-		background: rgb(25, 25, 25);
 	}
 
 	.rainbow-bottom::after {

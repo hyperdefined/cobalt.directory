@@ -18,7 +18,7 @@
 <style>
 	/* This footer was taken from https://github.com/xz/new.css/pull/72 */
 	footer {
-		background: var(--nc-bg-2);
+		background: #111111;
 		padding: 2rem 1.5rem;
 		margin: 2rem calc(0px - (50vw - 50%)) -2rem;
 		padding-left: calc(50vw - 50%);
@@ -35,7 +35,6 @@
 
 	.rainbow-top {
 		position: relative;
-		background: rgb(25, 25, 25);
 	}
 
 	.rainbow-top::after {
