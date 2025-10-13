@@ -74,7 +74,7 @@
 <p>Last updated (UTC): {fmtTime(data.lastUpdatedUTC)}</p>
 
 <!-- OFFICIAL -->
-<h2>Official Instances</h2>
+<h3>Official Instances</h3>
 <OfficialBlurb />
 
 <div class="table-container">
@@ -127,7 +127,7 @@
 </div>
 
 <!-- COMMUNITY -->
-<h2>Community Instances</h2>
+<h3>Community Instances</h3>
 <CommunityBlurb />
 
 <div class="table-container">

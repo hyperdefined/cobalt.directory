@@ -48,67 +48,60 @@
 	/>
 </svelte:head>
 
-{#if data.notFound}
-	<div>
-		<h2>Instance not found</h2>
-		<p>No instance with id <code>{data.id}</code> was found.</p>
+<div>
+	<h2>
+		{data.instance.titleHost}
+		{#if data.instance.apiNick}
+			<span>({data.instance.apiNick})</span>
+		{/if}
+	</h2>
+
+	<p>
+		The instance ID is <ClickToCopy text={data.id} />. You can bookmark this page to see service
+		status in the future for this instance.
+	</p>
+
+	<div style="margin: 0.5rem 0 1rem;">
+		{#if data.instance.frontend && data.instance.online}
+			<a href={`https://${safeHost(data.instance.frontend)}`} target="_blank" rel="noopener"
+				><button>Use Instance</button></a
+			>
+		{:else}
+			<button class="button">Use Instance</button>
+		{/if}
 	</div>
-{:else}
-	<div>
-		<h2>
-			{data.instance.titleHost}
-			{#if data.instance.apiNick}
-				<span>({data.instance.apiNick})</span>
-			{/if}
-		</h2>
 
-		<p>
-			The instance ID is <ClickToCopy text={data.id} />. You can bookmark this page to see service
-			status in the future for this instance.
-		</p>
+	<p>
+		This table shows what services work for
+		<ClickToCopy
+			text={`${data.instance.titleHost}${data.instance.apiNick ? ` (${data.instance.apiNick})` : ''}`}
+		/>. API URL for this instance is <ClickToCopy text="https://{data.instance.apiHost}" />.
+	</p>
 
-		<div style="margin: 0.5rem 0 1rem;">
-			{#if data.instance.frontend && data.instance.online}
-				<a href={`https://${safeHost(data.instance.frontend)}`} target="_blank" rel="noopener"
-					><button>Use Instance</button></a
-				>
-			{:else}
-				<button class="button">Use Instance</button>
-			{/if}
-		</div>
+	<p>Last updated (UTC): {fmtTime(data.lastUpdatedUTC)}</p>
 
-		<p>
-			This table shows what services work for
-			<ClickToCopy
-				text={`${data.instance.titleHost}${data.instance.apiNick ? ` (${data.instance.apiNick})` : ''}`}
-			/>. API URL for this instance is <ClickToCopy text="https://{data.instance.apiHost}" />.
-		</p>
-
-		<p>Last updated (UTC): {fmtTime(data.lastUpdatedUTC)}</p>
-
-		<div class="table-container">
-			<table class="service-table">
-				<thead>
-					<tr>
-						<th>Service</th>
-						<th>Working?</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each data.instance.services as s (s.key)}
-						{#key s.key}
-							<tr class={rowClass(data.instance.online, s.status)}>
-								<td>
-									{s.friendly}
-								</td>
-								<td>{data.instance.online ? (s.status ? '✅' : '❌') : '❌'}</td>
-								<td>{data.instance.online ? s.message : 'Offline'}</td>
-							</tr>
-						{/key}
-					{/each}
-				</tbody>
-			</table>
-		</div>
+	<div class="table-container">
+		<table class="service-table">
+			<thead>
+				<tr>
+					<th>Service</th>
+					<th>Working?</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each data.instance.services as s (s.key)}
+					{#key s.key}
+						<tr class={rowClass(data.instance.online, s.status)}>
+							<td>
+								{s.friendly}
+							</td>
+							<td>{data.instance.online ? (s.status ? '✅' : '❌') : '❌'}</td>
+							<td>{data.instance.online ? s.message : 'Offline'}</td>
+						</tr>
+					{/key}
+				{/each}
+			</tbody>
+		</table>
 	</div>
-{/if}
+</div>
