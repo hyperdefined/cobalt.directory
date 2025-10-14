@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class RequestUtil {
 
     public static final Logger logger = LogManager.getLogger(RequestUtil.class);
-    private static final Pattern TITLE_PATTERN = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TITLE_PATTERN = Pattern.compile("<meta\\s+(?:[^>]*?\\s)?name=[\"']application-name[\"']\\s+(?:[^>]*?\\s)?content=[\"']cobalt[\"'][^>]*>", Pattern.CASE_INSENSITIVE);
 
     /**
      * Send a POST request.
@@ -148,7 +148,7 @@ public class RequestUtil {
      * @param url The url to test.
      * @return true/false if it works and is valid.
      */
-    public static boolean testFrontEnd(String url) {
+    public static RequestResults testFrontEnd(String url) {
         int response;
         HttpURLConnection connection = null;
         try {
@@ -173,32 +173,28 @@ public class RequestUtil {
 
                 Matcher matcher = TITLE_PATTERN.matcher(content.toString());
                 if (matcher.find()) {
-                    String title = matcher.group(1).trim();
-                    if (title.equalsIgnoreCase("cobalt")) {
-                        return true;
-                    } else {
-                        logger.warn("{} frontend is alive, but title does NOT match to cobalt. Please manually check this!", url);
-                    }
+                    return new RequestResults("valid", response, null, null);
+                } else {
+                    return new RequestResults("no", response, null, null);
                 }
             } else {
-                return false;
+                return new RequestResults("Returned non HTTP 200 code: " + response, response, null, null);
             }
         } catch (Exception exception) {
             logger.error("Unable to read URL {}", url, exception);
-            return false;
+            return new RequestResults(null, -1, null, exception);
         } finally {
             if (connection != null) {
                 connection.disconnect();
             }
         }
-        return false;
     }
 
     /**
      * Check the size of the length headers. cobalt sometimes reports it.
      * 0 means it failed.
      *
-     * @param urlString The tunnel URL in cobalt's response.
+     * @param url The tunnel URL in cobalt's response.
      * @return A Headers record with the header name and its value, or null if not present.
      */
     public static ContentLengthHeader checkTunnelLength(String url) {

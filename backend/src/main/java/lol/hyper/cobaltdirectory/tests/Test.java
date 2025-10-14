@@ -49,13 +49,14 @@ public class Test {
     }
 
     private void runFrontEndTest() {
-        boolean validFrontEnd = RequestUtil.testFrontEnd(testUrl);
-        if (validFrontEnd) {
+        RequestResults frontendTest = RequestUtil.testFrontEnd(testUrl);
+        String message = frontendTest.responseContent();
+        if (message.equalsIgnoreCase("valid")) {
             instance.addResult(new TestResult(serviceId, true, "Working"));
             logger.info("Test PASS for checking frontend {} ", testUrl);
         } else {
-            logger.info("Test FAIL for checking frontend {} ", testUrl);
-            instance.addResult(new TestResult(serviceId, false, null));
+            logger.info("Test FAIL for checking frontend {} -  {}", testUrl, message);
+            instance.addResult(new TestResult(serviceId, false, message));
         }
     }
 
