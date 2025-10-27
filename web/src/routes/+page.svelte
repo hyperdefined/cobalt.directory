@@ -61,7 +61,7 @@
 </svelte:head>
 <h2>cobalt.directory</h2>
 <p>
-	cobalt.directory is <strong>unofficial</strong> site to track cobalt instances that are safe to use
+	cobalt.directory is an <strong>unofficial</strong> site to track cobalt instances that are safe to use
 	& what services work on them. This site updates every ~10 minutes.
 </p>
 <p>
