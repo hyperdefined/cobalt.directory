@@ -1,6 +1,7 @@
 package lol.hyper.cobaltdirectory.services;
 
 import lol.hyper.cobaltdirectory.CobaltDirectory;
+import lol.hyper.cobaltdirectory.tests.XiaohongshuTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -26,8 +27,6 @@ public class Services {
 
             logger.info("Importing test: {}", service);
             if (service.equalsIgnoreCase("xiaohongshu")) {
-                continue;
-                /*
                 logger.info("Generating Xiaohongshu test video...");
                 String xiaohongshuUrl = XiaohongshuTest.getTestUrl();
                 if (xiaohongshuUrl == null) {
@@ -36,7 +35,7 @@ public class Services {
                     logger.info("Found valid Xiaohongshu link: {}", xiaohongshuUrl);
                     // override the url
                     serviceUrl = xiaohongshuUrl;
-                }*/
+                }
             }
             services.add(serviceId);
             idToFriendly.put(serviceId, service);
