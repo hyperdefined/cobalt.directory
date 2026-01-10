@@ -63,3 +63,4 @@ CobaltDirectory-*.jar
 backend/apikeys.json
 backend/api.json
 backend/api_frontends.json
+backend/proxy.json

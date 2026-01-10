@@ -12,6 +12,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -22,6 +24,9 @@ public class Init {
     private JSONObject tests;
     private JSONObject apiKeys;
     private List<String> instanceFileContents;
+    private boolean proxy;
+    private String proxyHost;
+    private int proxyPort;
 
     public void start(String[] args) {
         // load the git information
@@ -105,9 +110,11 @@ public class Init {
         File instancesFile = new File(instanceFile);
         File testUrlsFile = new File("tests.json");
         File apiKeysFile = new File("apikeys.json");
+        File proxyFile = new File("proxy.json");
         logger.info("Using instances file: {}", instancesFile.getAbsolutePath());
         logger.info("Using tests file: {}", testUrlsFile.getAbsolutePath());
         logger.info("Using api keys file: {}", apiKeysFile.getAbsolutePath());
+        logger.info("Using proxy file: {}", proxyFile.getAbsolutePath());
         instanceFileContents = FileUtil.readRawFile(instancesFile);
         if (instanceFileContents.isEmpty()) {
             logger.error("{} exists, but it's empty?", instanceFile);
@@ -133,6 +140,30 @@ public class Init {
         }
         apiKeys = new JSONObject(apiKeyContents);
 
+        String proxyFileContents = FileUtil.readFile(proxyFile);
+        if (proxyFileContents == null) {
+            logger.warn("proxy.json failed to load! Can't use a proxy for requests.");
+            proxy = false;
+        } else {
+            JSONObject proxyJson = new JSONObject(proxyFileContents);
+            proxyHost = proxyJson.getString("host");
+            proxyPort = Integer.parseInt(proxyJson.getString("port"));
+            logger.info("Using proxy {}:{} for requests", proxyHost, proxyPort);
+            proxy = true;
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    if (getRequestorType() == RequestorType.PROXY) {
+                        return new PasswordAuthentication(
+                                proxyJson.getString("username"),
+                                proxyJson.getString("password").toCharArray()
+                        );
+                    }
+                    return null;
+                }
+            });
+        }
+
         // folders for web
         File serviceFolder = new File("../web", "service");
         File instanceFolder = new File("../web", "instance");
@@ -148,5 +179,17 @@ public class Init {
         } catch (IOException exception) {
             logger.error("Unable to make folder for web!", exception);
         }
+    }
+
+    public boolean useProxy() {
+        return proxy;
+    }
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public int getProxyPort() {
+        return proxyPort;
     }
 }

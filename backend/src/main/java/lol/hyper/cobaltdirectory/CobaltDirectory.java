@@ -7,6 +7,7 @@ import lol.hyper.cobaltdirectory.tests.Test;
 import lol.hyper.cobaltdirectory.tests.TestBuilder;
 import lol.hyper.cobaltdirectory.tests.TestResult;
 import lol.hyper.cobaltdirectory.utils.FileUtil;
+import lol.hyper.cobaltdirectory.utils.ProxyInfo;
 import lol.hyper.cobaltdirectory.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,7 @@ public class CobaltDirectory {
     private static Logger logger;
     private static String USER_AGENT;
     private static final ReusableMessageFactory MESSAGE_FACTORY = new ReusableMessageFactory();
+    private static ProxyInfo proxyInfo = null;
 
     static class TestCounter {
         int success;
@@ -38,6 +40,11 @@ public class CobaltDirectory {
 
         Init init = new Init();
         init.start(args);
+
+        // check if we should use a proxy
+        if (init.useProxy()) {
+            proxyInfo = new ProxyInfo(init.getProxyHost(), init.getProxyPort());
+        }
 
         // set the user agent
         USER_AGENT = init.getUserAgent();
@@ -283,5 +290,13 @@ public class CobaltDirectory {
 
     public static ReusableMessageFactory getMessageFactory() {
         return MESSAGE_FACTORY;
+    }
+
+    public static boolean useProxy() {
+        return proxyInfo != null;
+    }
+
+    public static ProxyInfo getProxyInfo() {
+        return proxyInfo;
     }
 }

@@ -8,9 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -291,6 +289,57 @@ public class RequestUtil {
         }
         if (content.isEmpty()) {
             logger.error("Read content from {} returned an empty string!", url);
+            return new RequestResults(null, -1, null, null);
+        }
+        return new RequestResults(content, code, null, null);
+    }
+
+    /**
+     * Request a site's HTML with the proxy.
+     *
+     * @param url       The url.
+     * @param userAgent The user agent.
+     * @return RequestResults containing the results.
+     */
+    public static RequestResults requestWithProxy(String url, String userAgent) {
+        String content;
+        HttpURLConnection connection = null;
+        int code;
+        try {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(CobaltDirectory.getProxyInfo().host(), CobaltDirectory.getProxyInfo().port()));
+            connection = (HttpURLConnection) new URI(url).toURL().openConnection(proxy);
+            connection.setRequestProperty("User-Agent", userAgent);
+            connection.setConnectTimeout(20000);
+            connection.setReadTimeout(20000);
+            connection.connect();
+
+            InputStream in;
+            if (connection.getResponseCode() >= 400) {
+                in = connection.getErrorStream();
+            } else {
+                in = connection.getInputStream();
+            }
+
+            if (in == null) {
+                connection.disconnect();
+                return new RequestResults(null, -1, null, null);
+            }
+
+            code = connection.getResponseCode();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            content = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            reader.close();
+        } catch (Exception exception) {
+            logger.error("Unable to connect to or read from {} with our proxy", url, exception);
+            return new RequestResults(null, -1, null, exception);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        if (content.isEmpty()) {
+            logger.error("Read content from {} returned an empty string with our proxy!", url);
             return new RequestResults(null, -1, null, null);
         }
         return new RequestResults(content, code, null, null);

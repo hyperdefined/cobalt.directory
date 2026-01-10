@@ -1,5 +1,6 @@
 package lol.hyper.cobaltdirectory.tests;
 
+import lol.hyper.cobaltdirectory.CobaltDirectory;
 import lol.hyper.cobaltdirectory.requests.RequestResults;
 import lol.hyper.cobaltdirectory.utils.RequestUtil;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,13 @@ public class XiaohongshuTest {
     private static final Logger logger = LogManager.getLogger(XiaohongshuTest.class);
 
     public static String getTestUrl() {
-        RequestResults result = RequestUtil.request("https://www.xiaohongshu.com/explore", USER_AGENT);
+        RequestResults result;
+        if (CobaltDirectory.useProxy()) {
+            logger.info("Using proxy to check for Xiaohongshu media.");
+            result = RequestUtil.requestWithProxy("https://www.xiaohongshu.com/explore", USER_AGENT);
+        } else {
+            result = RequestUtil.request("https://www.xiaohongshu.com/explore", USER_AGENT);
+        }
         if (result.responseCode() != 200) {
             logger.warn("Xiaohongshu returned HTTP {}", result.responseCode());
             return null;
