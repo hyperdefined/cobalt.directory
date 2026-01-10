@@ -2,6 +2,8 @@ package lol.hyper.cobaltdirectory.tests;
 
 import lol.hyper.cobaltdirectory.requests.RequestResults;
 import lol.hyper.cobaltdirectory.utils.RequestUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,11 +11,13 @@ import java.util.regex.Pattern;
 public class XiaohongshuTest {
 
     private static final Pattern VIDEO_PATTERN = Pattern.compile("/explore\\/[a-f0-9]{24}\\?xsec_token=[^&]+(?:&amp;|&)xsec_source=");
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36";
+    private static final Logger logger = LogManager.getLogger(XiaohongshuTest.class);
 
     public static String getTestUrl() {
         RequestResults result = RequestUtil.request("https://www.xiaohongshu.com/explore", USER_AGENT);
         if (result.responseCode() != 200) {
+            logger.warn("Xiaohongshu returned HTTP {}", result.responseCode());
             return null;
         }
 
@@ -22,6 +26,7 @@ public class XiaohongshuTest {
         if (matcher.find()) {
             return "https://www.xiaohongshu.com" + matcher.group(0);
         }
+        logger.warn("Failed to find media link from Xiaohongshu, regex did not match");
         return null;
     }
 }
