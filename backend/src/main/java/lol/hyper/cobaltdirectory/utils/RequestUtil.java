@@ -295,7 +295,7 @@ public class RequestUtil {
     }
 
     /**
-     * Request a site's HTML with the proxy.
+     * Request a site's HTML with the proxy.json.
      *
      * @param url       The url.
      * @param userAgent The user agent.
@@ -331,7 +331,7 @@ public class RequestUtil {
             content = reader.lines().collect(Collectors.joining(System.lineSeparator()));
             reader.close();
         } catch (Exception exception) {
-            logger.error("Unable to connect to or read from {} with our proxy", url, exception);
+            logger.error("Unable to connect to or read from {} with our proxy.json", url, exception);
             return new RequestResults(null, -1, null, exception);
         } finally {
             if (connection != null) {
@@ -339,7 +339,7 @@ public class RequestUtil {
             }
         }
         if (content.isEmpty()) {
-            logger.error("Read content from {} returned an empty string with our proxy!", url);
+            logger.error("Read content from {} returned an empty string with our proxy.json!", url);
             return new RequestResults(null, -1, null, null);
         }
         return new RequestResults(content, code, null, null);

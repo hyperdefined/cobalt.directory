@@ -114,7 +114,7 @@ public class Init {
         logger.info("Using instances file: {}", instancesFile.getAbsolutePath());
         logger.info("Using tests file: {}", testUrlsFile.getAbsolutePath());
         logger.info("Using api keys file: {}", apiKeysFile.getAbsolutePath());
-        logger.info("Using proxy file: {}", proxyFile.getAbsolutePath());
+        logger.info("Using proxy.json file: {}", proxyFile.getAbsolutePath());
         instanceFileContents = FileUtil.readRawFile(instancesFile);
         if (instanceFileContents.isEmpty()) {
             logger.error("{} exists, but it's empty?", instanceFile);
@@ -142,30 +142,14 @@ public class Init {
 
         String proxyFileContents = FileUtil.readFile(proxyFile);
         if (proxyFileContents == null) {
-            logger.warn("proxy.json failed to load! Can't use a proxy for requests.");
+            logger.warn("proxy.json failed to load! Can't use a proxy.json for requests.");
             proxy = false;
         } else {
             JSONObject proxyJson = new JSONObject(proxyFileContents);
             proxyHost = proxyJson.getString("host");
             proxyPort = Integer.parseInt(proxyJson.getString("port"));
-            logger.info("Using proxy {}:{} for requests", proxyHost, proxyPort);
+            logger.info("Using proxy.json {}:{} for requests", proxyHost, proxyPort);
             proxy = true;
-
-            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
-            System.setProperty("jdk.http.auth.proxying.disabledSchemes", "");
-
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    if (getRequestorType() == RequestorType.PROXY) {
-                        return new PasswordAuthentication(
-                                proxyJson.getString("username"),
-                                proxyJson.getString("password").toCharArray()
-                        );
-                    }
-                    return null;
-                }
-            });
         }
 
         // folders for web
