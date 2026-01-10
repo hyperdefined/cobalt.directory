@@ -150,6 +150,10 @@ public class Init {
             proxyPort = Integer.parseInt(proxyJson.getString("port"));
             logger.info("Using proxy {}:{} for requests", proxyHost, proxyPort);
             proxy = true;
+
+            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+            System.setProperty("jdk.http.auth.proxying.disabledSchemes", "");
+
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
