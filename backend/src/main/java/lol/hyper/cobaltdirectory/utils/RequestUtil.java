@@ -49,8 +49,8 @@ public class RequestUtil {
                 connection.setRequestProperty("Authorization", "Api-Key " + authorization);
             }
             connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
 
             byte[] out = body.toString().getBytes(StandardCharsets.UTF_8);
             OutputStream stream = connection.getOutputStream();
@@ -106,8 +106,8 @@ public class RequestUtil {
         try {
             connection = (HttpURLConnection) new URI(url).toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
 
             InputStream in;
@@ -154,8 +154,8 @@ public class RequestUtil {
             connection = (HttpURLConnection) connectUrl.toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
             response = connection.getResponseCode();
 
@@ -202,8 +202,8 @@ public class RequestUtil {
             connection = (HttpURLConnection) connectUrl.toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
             connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
             return extractLength(connection);
         } catch (Exception exception) {
@@ -229,8 +229,8 @@ public class RequestUtil {
             connection = (HttpURLConnection) connectUrl.toURL().openConnection();
             connection.setRequestProperty("User-Agent", CobaltDirectory.getUserAgent());
             connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
 
             return connection.getResponseCode() == 200;
@@ -258,8 +258,8 @@ public class RequestUtil {
         try {
             connection = (HttpURLConnection) new URI(url).toURL().openConnection();
             connection.setRequestProperty("User-Agent", userAgent);
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
 
             InputStream in;
@@ -309,8 +309,8 @@ public class RequestUtil {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(CobaltDirectory.getProxyInfo().host(), CobaltDirectory.getProxyInfo().port()));
             connection = (HttpURLConnection) new URI(url).toURL().openConnection(proxy);
             connection.setRequestProperty("User-Agent", userAgent);
-            connection.setConnectTimeout(20000);
-            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
 
             InputStream in;
