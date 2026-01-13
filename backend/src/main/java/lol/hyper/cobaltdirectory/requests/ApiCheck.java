@@ -30,16 +30,11 @@ public class ApiCheck {
             requestApi = requestApi.substring(0, requestApi.length() - 1);
         }
 
-        // check root
-        if (!RequestUtil.head(requestApi + "/api/serverInfo")) {
-            if (!RequestUtil.head(requestApi)) {
-                logger.error("{} failed all HEAD requests, is DEAD!", api);
-                instance.setOffline();
-                return;
-            }
-        } else {
-            // /api/serverInfo worked, make sure we update the URL
-            requestApi += "/api/serverInfo";
+        // check API
+        if (!RequestUtil.head(requestApi)) {
+            logger.error("{} failed HEAD request, marking instance as offline!", api);
+            instance.setOffline();
+            return;
         }
 
         RequestResults apiContent = RequestUtil.requestJSON(requestApi);
@@ -58,7 +53,7 @@ public class ApiCheck {
             return;
         }
 
-        logger.info("Found API status under {}", requestApi);
+        logger.info("Found valid cobalt API under {}", requestApi);
         instance.setApiWorking(true);
         // on cobalt 10, the JSON response is different
         if (json.has("cobalt")) {

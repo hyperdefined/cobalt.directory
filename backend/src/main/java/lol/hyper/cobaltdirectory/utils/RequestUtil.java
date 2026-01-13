@@ -233,7 +233,13 @@ public class RequestUtil {
             connection.setReadTimeout(30000);
             connection.connect();
 
-            return connection.getResponseCode() == 200;
+            if (connection.getResponseCode() == 200) {
+                logger.info("HEAD request successful for {}", url);
+                return true;
+            } else {
+                logger.info("HEAD request failed for {}, HTTP {}", url, connection.getResponseCode());
+                return false;
+            }
         } catch (Exception exception) {
             logger.error("Unable to HEAD {}", url, exception);
             return false;
