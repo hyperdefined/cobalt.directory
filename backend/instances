@@ -10,11 +10,14 @@ kityune.imput.net,cobalt.tools,https
 sunny.imput.net,cobalt.tools,https
 
 # misc
-cobalt-backend.canine.tools,cobalt.canine.tools,https
 cobalt-api.kwiatekmiki.com,cobalt.kwiatekmiki.com,https
 api.qwkuns.me,qwkuns.me,https
 api.kektube.com,kektube.com,https
 cobaltapi.cjs.nz,cobalt.cjs.nz,https
+
+# canine.tools
+alpha.wolfy.love,cobalt.canine.tools,https
+beta.wolfy.love,cobalt.canine.tools,https
 
 # patrick's instances
 subito-c.meowing.de,cobalt.meowing.de,https
