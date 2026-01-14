@@ -1,7 +1,7 @@
 <footer class="rainbow-top">
 	<p>
-		This site is not official or related to <a href="https://imput.net/">imput.net</a> (the creators
-		of cobalt).
+		This site is not official or related to <a href="https://imput.net/">imput.net</a> (the creators of
+		cobalt).
 	</p>
 	<p>
 		This site was build with love, care, and fluff! Created and managed by <a

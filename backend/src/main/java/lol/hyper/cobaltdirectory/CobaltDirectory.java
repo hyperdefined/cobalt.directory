@@ -175,7 +175,6 @@ public class CobaltDirectory {
         }
 
         for (Instance instance : instances) {
-
             JSONObject instanceResults = new JSONObject();
             instanceResults.put("api", instance.getApi());
             instanceResults.put("frontend", instance.getFrontEnd());
@@ -183,6 +182,7 @@ public class CobaltDirectory {
             instanceResults.put("online", instance.isApiWorking());
             instanceResults.put("version", instance.getVersion());
             instanceResults.put("remote", instance.getRemote());
+            instanceResults.put("startTime", instance.getStartTime());
 
             JSONObject tests = new JSONObject();
 

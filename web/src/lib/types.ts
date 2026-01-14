@@ -13,4 +13,5 @@ export type Instance = {
 	online?: boolean;
 	remote?: string;
 	official?: boolean;
+	startTime?: number;
 };

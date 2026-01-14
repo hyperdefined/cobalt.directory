@@ -5,6 +5,11 @@ import { makeHash } from '$lib/server/hash';
 
 const hostOnly = (v?: string) => (v ?? '').replace(/^https?:\/\//, '');
 
+const unixToMs = (v?: number | null) => {
+	if (!v) return null;
+	return v < 1e12 ? v * 1000 : v;
+};
+
 export const load: PageServerLoad = async ({ fetch }) => {
 	const res = await fetch('/api/tests');
 	if (!res.ok) throw new Error('Failed to fetch tests');
@@ -12,6 +17,8 @@ export const load: PageServerLoad = async ({ fetch }) => {
 	const json = await res.json();
 	const instances = json.data as Instance[];
 	const lastUpdatedUTC = json.lastUpdatedUTC as string;
+
+	const now = Date.now();
 
 	const enriched = instances.map((inst) => {
 		const apiHost = hostOnly(inst.api);
@@ -22,13 +29,18 @@ export const load: PageServerLoad = async ({ fetch }) => {
 		const up = entries.filter((t) => t.status).length;
 		const scorePct = total > 0 ? Math.round((up / total) * 100) : 0;
 
+		const startMs = unixToMs((inst as any).startTime);
+		const online = inst.online !== false;
+		const onlineForMs = online && startMs && startMs <= now ? now - startMs : null;
+
 		return {
 			...inst,
 			id,
 			totals: { up, total },
 			scorePct,
 			officialComputed: isOfficial(inst.api),
-			online: inst.online !== false
+			online,
+			onlineForMs
 		};
 	});
 

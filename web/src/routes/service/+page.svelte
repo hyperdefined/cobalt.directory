@@ -14,6 +14,24 @@
 
 	let selectedKey = '';
 
+	const formatOnlineTime = (ms?: number | null) => {
+		if (!ms || ms <= 0) return '—';
+
+		const totalSeconds = Math.floor(ms / 1000);
+		const days = Math.floor(totalSeconds / 86400);
+		const hours = Math.floor((totalSeconds % 86400) / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+		if (days > 0) return `${days}d, ${hours}h, ${minutes}m`;
+		if (hours > 0) return `${hours}h, ${minutes}m`;
+		return `${minutes}m`;
+	};
+
+	const unixToMs = (v?: number | null) => {
+		if (!v) return null;
+		return v < 1e12 ? v * 1000 : v; // seconds -> ms
+	};
+
 	const safeHost = (h?: string | null) => h?.replace(/^https?:\/\//, '') ?? '';
 
 	const rowClass = (r: { online: boolean; working: boolean }) =>
@@ -28,10 +46,14 @@
 	$: rows = (() => {
 		if (!selectedKey) return { official: [], community: [] };
 
+		const nowMs = Date.now();
 		const items = instances
 			.map((inst) => {
 				const entry = inst.tests?.[selectedKey];
 				const online = inst.online !== false;
+
+				const startMs = unixToMs(inst.startTime);
+				const onlineForMs = online && startMs && startMs <= nowMs ? nowMs - startMs : null;
 
 				if (!entry && !online) {
 					return {
@@ -39,6 +61,7 @@
 						frontend: inst.frontend ?? null,
 						api: inst.api ?? '',
 						online,
+						onlineForMs,
 						working: false,
 						message: 'Offline'
 					};
@@ -50,6 +73,7 @@
 						frontend: inst.frontend ?? null,
 						api: inst.api ?? '',
 						online,
+						onlineForMs,
 						working: false,
 						message: 'Unsupported'
 					};
@@ -60,6 +84,7 @@
 					frontend: inst.frontend ?? null,
 					api: inst.api ?? '',
 					online,
+					onlineForMs,
 					working: online ? Boolean(entry?.status) : false,
 					message: online ? (entry ? entry.message : 'Unsupported') : 'Offline'
 				};
@@ -124,6 +149,7 @@
 						<tr>
 							<th>Frontend</th>
 							<th>API</th>
+							<th>Uptime</th>
 							<th>Working?</th>
 							<th>Status</th>
 						</tr>
@@ -146,6 +172,7 @@
 										{/if}
 									</td>
 									<td>{safeHost(r.api) || '—'}</td>
+									<td>{r.online ? formatOnlineTime(r.onlineForMs) : 'Offline'}</td>
 									<td>{r.working ? '✅' : '❌'}</td>
 									<td>{r.message}</td>
 								</tr>
@@ -167,6 +194,7 @@
 						<tr>
 							<th>Frontend</th>
 							<th>API</th>
+							<th>Uptime</th>
 							<th>Working?</th>
 							<th>Status</th>
 						</tr>
@@ -189,6 +217,7 @@
 										{/if}
 									</td>
 									<td>{safeHost(r.api) || '—'}</td>
+									<td>{r.online ? formatOnlineTime(r.onlineForMs) : 'Offline'}</td>
 									<td>{r.working ? '✅' : '❌'}</td>
 									<td>{r.message}</td>
 								</tr>

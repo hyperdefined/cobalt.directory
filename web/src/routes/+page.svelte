@@ -12,6 +12,7 @@
 		totals: { up: number; total: number };
 		scorePct: number;
 		online: boolean;
+		onlineForMs?: number | null;
 	};
 
 	const siteUrl = page.url.origin;
@@ -37,6 +38,24 @@
 		if (s >= 75 && s < 100) return 'rating-good';
 		return '';
 	};
+
+	const fmtDuration = (ms?: number | null) => {
+		if (!ms || ms <= 0) return '—';
+
+		const totalSeconds = Math.floor(ms / 1000);
+		const days = Math.floor(totalSeconds / 86400);
+		const hours = Math.floor((totalSeconds % 86400) / 3600);
+		const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+		if (days > 0) return `${days}d, ${hours}h, ${minutes}m`;
+		if (hours > 0) return `${hours}h, ${minutes}m`;
+		return `${minutes}m`;
+	};
+
+	const formatOnlineTime = (i: ViewInstance) => {
+		if (!i.online) return 'Offline';
+		return fmtDuration(i.onlineForMs);
+	};
 </script>
 
 <svelte:head>
@@ -61,8 +80,8 @@
 </svelte:head>
 <h2>cobalt.directory</h2>
 <p>
-	cobalt.directory is an <strong>unofficial</strong> site to track cobalt instances that are safe to
-	use & what services work on them. This site updates every ~10 minutes.
+	cobalt.directory is an <strong>unofficial</strong> site to track cobalt instances that are safe to use
+	& what services work on them. This site updates every ~10 minutes.
 </p>
 <p>
 	This site is not 100% accurate! Some requests fail randomly, so always try the service regardless.
@@ -88,6 +107,7 @@
 				<th>Frontend</th>
 				<th>API</th>
 				<th>Version</th>
+				<th>Uptime</th>
 				<th>Remote</th>
 				<th>Services</th>
 				<th>Score</th>
@@ -112,6 +132,7 @@
 						</td>
 						<td>{i.api ? safeHost(i.api) : '—'}</td>
 						<td>{i.version ?? '—'}</td>
+						<td>{formatOnlineTime(i)}</td>
 						<td>{i.remote ?? '—'}</td>
 						<td>{fmtServices(i)}</td>
 						<td>
@@ -141,6 +162,7 @@
 				<th>Frontend</th>
 				<th>API</th>
 				<th>Version</th>
+				<th>Uptime</th>
 				<th>Remote</th>
 				<th>Services</th>
 				<th>Score</th>
@@ -165,6 +187,7 @@
 						</td>
 						<td>{i.api ? safeHost(i.api) : '—'}</td>
 						<td>{i.version ?? '—'}</td>
+						<td>{formatOnlineTime(i)}</td>
 						<td>{i.remote ?? '—'}</td>
 						<td>{fmtServices(i)}</td>
 						<td>
