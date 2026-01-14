@@ -3,16 +3,23 @@
 # Do not include any slashes, just the domain names/IPs
 # For protocol, it's either http or https, whatever the instance uses.
 
-# instances with domains
+# official cobalt
 nachos.imput.net,cobalt.tools,https
 blossom.imput.net,cobalt.tools,https
 kityune.imput.net,cobalt.tools,https
 sunny.imput.net,cobalt.tools,https
+
+# misc
 cobalt-backend.canine.tools,cobalt.canine.tools,https
 cobalt-api.kwiatekmiki.com,cobalt.kwiatekmiki.com,https
-subito-c.meowing.de,cobalt.meowing.de,https
-nuko-c.meowing.de,cobalt.meowing.de,https
-cobalt-api.clxxped.lol,cobalt.clxxped.lol,https
 api.qwkuns.me,qwkuns.me,https
 api.kektube.com,kektube.com,https
 cobaltapi.cjs.nz,cobalt.cjs.nz,https
+
+# patrick's instances
+subito-c.meowing.de,cobalt.meowing.de,https
+nuko-c.meowing.de,cobalt.meowing.de,https
+
+# clxxped's instances
+melon.clxxped.lol,cobalt.clxxped.lol,https
+grapefruit.clxxped.lol,cobalt.clxxped.lol,https
