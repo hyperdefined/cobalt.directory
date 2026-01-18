@@ -16,20 +16,20 @@
 <h2>About</h2>
 <p>
 	In August of 2023, I started to track a list of cobalt instances for fun, called
-	`instances.hyper.lol`. At the start, this list was public and had to be user submitted. This list
+	<code>instances.hyper.lol</code>. At the start, this list was public and had to be user submitted. This list
 	was from the cobalt Discord server.
 </p>
 
 <p>
 	Eventually, I found out ways to search the internet for public cobalt instances. I wrote a blog
-	post about it <a href="https://hyper.lol/blog/2024/05-03/hunting-down-cobalt-instances">here</a>.
+	post about it <a href="https://hyper.lol/blog/4">here</a>.
 </p>
 
 <p>
 	However, this list ended up growing larger than expected, and eventually was used for abuse.
 	Different "social media downloaders" websites were taking my list and using the cobalt instances
 	as their backend. They were profiting from open-source software. Furthermore, most instances were
-	not aware of this list.
+	not aware of this list, and didn't consent to being on the list.
 </p>
 
 <p>

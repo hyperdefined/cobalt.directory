@@ -3,6 +3,7 @@
 	import type { Instance } from '$lib/types';
 	import OfficialBlurb from '$lib/components/OfficialBlurb.svelte';
 	import CommunityBlurb from '$lib/components/CommunityBlurb.svelte';
+	import DonateToast from '$lib/components/DonateToast.svelte';
 	export let data: PageData;
 	import { page } from '$app/state';
 	import { fmtTime } from '$lib/utils/time';
@@ -78,6 +79,8 @@
 		content="An unofficial site to track cobalt instances that are safe to use & what services work on them."
 	/>
 </svelte:head>
+<DonateToast />
+
 <h2>cobalt.directory</h2>
 <p>
 	cobalt.directory is an <strong>unofficial</strong> site to track cobalt instances that are safe to use
