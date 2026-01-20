@@ -11,7 +11,7 @@ export type Instance = {
 	frontend: string;
 	version?: string;
 	online?: boolean;
-	remote?: string;
+	codebase?: string;
 	official?: boolean;
 	startTime?: number;
 };

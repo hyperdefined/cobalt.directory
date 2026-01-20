@@ -181,7 +181,7 @@ public class CobaltDirectory {
             instanceResults.put("protocol", instance.getProtocol());
             instanceResults.put("online", instance.isApiWorking());
             instanceResults.put("version", instance.getVersion());
-            instanceResults.put("remote", instance.getRemote());
+            instanceResults.put("codebase", instance.getRemote());
             instanceResults.put("startTime", instance.getStartTime());
 
             JSONObject tests = new JSONObject();

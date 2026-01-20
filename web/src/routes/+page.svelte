@@ -111,7 +111,7 @@
 				<th>API</th>
 				<th>Version</th>
 				<th>Uptime</th>
-				<th>Remote</th>
+				<th>Codebase</th>
 				<th>Services</th>
 				<th>Score</th>
 			</tr>
@@ -136,7 +136,7 @@
 						<td>{i.api ? safeHost(i.api) : '—'}</td>
 						<td>{i.version ?? '—'}</td>
 						<td>{formatOnlineTime(i)}</td>
-						<td>{i.remote ?? '—'}</td>
+						<td>{i.codebase ?? '—'}</td>
 						<td>{fmtServices(i)}</td>
 						<td>
 							{#if i.online && i.id}
@@ -166,7 +166,7 @@
 				<th>API</th>
 				<th>Version</th>
 				<th>Uptime</th>
-				<th>Remote</th>
+				<th>Codebase</th>
 				<th>Services</th>
 				<th>Score</th>
 			</tr>
@@ -191,7 +191,7 @@
 						<td>{i.api ? safeHost(i.api) : '—'}</td>
 						<td>{i.version ?? '—'}</td>
 						<td>{formatOnlineTime(i)}</td>
-						<td>{i.remote ?? '—'}</td>
+						<td>{i.codebase ?? '—'}</td>
 						<td>{fmtServices(i)}</td>
 						<td>
 							{#if i.online && i.id}
