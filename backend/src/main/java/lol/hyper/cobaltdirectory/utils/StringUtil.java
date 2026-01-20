@@ -50,6 +50,10 @@ public class StringUtil {
         if (input.contains("temporary token")) {
             return "Failed to get temporary token for Soundcloud";
         }
+        // error.api.invalid_body
+        if (input.contains("invalid_body")) {
+            return "Unable to get test media";
+        }
         return Jsoup.parse(input).text();
     }
 
