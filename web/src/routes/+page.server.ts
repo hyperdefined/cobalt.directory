@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
 			...inst,
 			id,
 			totals: { up, total },
-			scorePct,
+			scorePct: online ? scorePct : -1,
 			officialComputed: isOfficial(inst.api),
 			online,
 			onlineForMs

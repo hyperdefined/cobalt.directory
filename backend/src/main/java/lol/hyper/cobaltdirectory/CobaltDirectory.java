@@ -160,7 +160,6 @@ public class CobaltDirectory {
         // set when the tests ran. this will be afterward, as it's more for "as of this time"
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String formattedDate = f.format(new Date());
 
         // check for dupes
         findDuplicates(instances);
