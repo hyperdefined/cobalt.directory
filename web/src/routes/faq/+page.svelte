@@ -95,10 +95,6 @@
 
 <details>
 	<summary>I want to add/remove my instance!</summary>
-	<p>
-		If you want to be added/removed, ping @hyperdefined on the <a
-			href="https://discord.gg/pQPt8HBUPu">cobalt discord</a
-		>
-		or create a pull request <a href="https://github.com/hyperdefined/cobalt.directory">here</a>.
+	<p>See the <a href="https://github.com/hyperdefined/cobalt.directory">README</a>.
 	</p>
 </details>
