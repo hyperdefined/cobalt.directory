@@ -16,9 +16,14 @@ The project contains 2 parts:
 You can see a live demo at [cobalt.directory](https://cobalt.directory).
 
 ## I want to add my instance to your site!
-You can:
-* fork this repository, add your instance to `backend/instances`, and make a pull request.
-* ping `hyperdefined` in the [cobalt discord](https://discord.gg/pQPt8HBUPu).
+In order to have your instance added, you must:
+
+* Use a domain with HTTPS
+* Use a **known fork** or use your own that is **public**
+
+After you follow the things above:
+* Fork this repository, add your instance to `backend/instances`, and make a pull request.
+* Ping `hyperdefined` in the [cobalt discord](https://discord.gg/pQPt8HBUPu).
 
 ## License
 This program is released under MIT License. See [LICENSE](https://github.com/hyperdefined/cobalt.directory/blob/master/LICENSE).
