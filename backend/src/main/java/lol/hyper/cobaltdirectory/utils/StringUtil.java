@@ -52,7 +52,7 @@ public class StringUtil {
         }
         // error.api.invalid_body
         if (input.contains("invalid_body")) {
-            return "Unable to get test media";
+            return "Failed to get test media (not instance issue)";
         }
         return Jsoup.parse(input).text();
     }
