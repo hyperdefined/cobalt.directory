@@ -51,6 +51,7 @@ public class StringUtil {
             return "Failed to get temporary token for Soundcloud";
         }
         // error.api.invalid_body
+        // this should only appear with Xiaohongshu
         if (input.contains("invalid_body")) {
             return "Failed to get test media (not instance issue)";
         }
