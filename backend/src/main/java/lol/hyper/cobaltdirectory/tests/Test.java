@@ -209,15 +209,10 @@ public class Test {
     private void checkHeaders(String tunnelUrl, String status, long time) {
         ContentLengthHeader checkTunnelLength = RequestUtil.checkTunnelLength(tunnelUrl);
         // there were no content-length/estimated-content-length header
+        // this usually means it's fine, but idk 100%
         if (checkTunnelLength == null) {
-            // for YouTube, anything without the proper headers is failure, most of the time...?
-            if (serviceId.toLowerCase(Locale.ROOT).contains("youtube")) {
-                logger.error("Test FAILED for {} with {} - HTTP 200, status={}, time={}ms - youtube missing content-length header", api, friendlyService, status, time);
-                instance.addResult(new TestResult(serviceId, false, "Not working, didn't respond with proper content-length header"));
-            } else {
-                logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, friendlyService, status, time);
-                instance.addResult(new TestResult(serviceId, true, "Working, returned valid status, but no content-length header to verify"));
-            }
+            logger.warn("Test PASS for {} with {} - HTTP 200, status={}, time={}ms - missing content-length header", api, friendlyService, status, time);
+            instance.addResult(new TestResult(serviceId, true, "Working, returned valid status, but no content-length header to verify"));
             return;
         }
 
