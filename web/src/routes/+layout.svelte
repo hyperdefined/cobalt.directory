@@ -2,6 +2,7 @@
 	import '../app.css';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import InstanceArt from '$lib/components/InstanceArt.svelte';
 
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -36,5 +37,6 @@
 <Header />
 <main>
 	<slot />
+	<InstanceArt />
 </main>
 <Footer />
